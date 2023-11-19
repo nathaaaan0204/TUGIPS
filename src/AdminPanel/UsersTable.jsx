@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import {
   Button,
   Card,
@@ -11,16 +12,28 @@ import { dummyUsers } from "../Utils/Data";
 const TABLE_HEAD = ["ID", "Name", "Email", "Role", "Action"];
 const ITEMS_PER_PAGE = 10; // Number of items per page
 
-
 export const UsersTable = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const [users, setUsers] = useState([]);
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
 
+  // Fetch users data from the API
+  useEffect(() => {
+    axios
+      .get("https://localhost:44392/api/Registration/SearchRegistrations")
+      .then((response) => {
+        setUsers(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
   // Filter the rows based on the search query
-  const filteredRows = dummyUsers.filter((row) =>
+  const filteredRows = users.filter((row) =>
     Object.values(row).some((value) =>
       value.toString().toLowerCase().includes(searchQuery.toLowerCase())
     )

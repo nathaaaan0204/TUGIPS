@@ -84,7 +84,6 @@ export const AddUsers = ({ onAddUser }) => {
               value={newUser.strRole}
               onChange={(value) => setNewUser({ ...newUser, strRole: value })}
             >
-              <Option value="">Select Role</Option>
               <Option value="Staff">Staff</Option>
               <Option value="Admin">Admin</Option>
             </Select>

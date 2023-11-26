@@ -65,7 +65,7 @@ export const ViewUsers = () => {
   const handleSearchChange = async (e) => {
     const searchQuery = e.target.value;
     setSearchQuery(searchQuery);
-    setCurrentPage(1000); // Reset to the first page when searching
+    setCurrentPage(1); // Reset to the first page when searching
 
     try {
       const response = await axios.get(
@@ -157,7 +157,6 @@ export const ViewUsers = () => {
   };
 
   const handleUserEdit = (registrationId) => {
-    // Implement your logic for editing a user here
     // Navigate to the EditUser component passing the registrationId as a route parameter
     navigate(`/EditUser/${registrationId}`);
   };

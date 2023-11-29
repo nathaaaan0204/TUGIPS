@@ -44,7 +44,7 @@ export const News = () => {
         <Typography className="text-6xl font-medium">NEWS</Typography>
       </div>
       <div className="px-52 py-24">
-        <h2 className="text-2xl font-bold mb-4">Recent Articles</h2>
+        <h2 className="text-2xl font-bold mb-4">ARTICLES</h2>
         <ul>
           {articles
             .filter((article) => article.strCategory === 'News')

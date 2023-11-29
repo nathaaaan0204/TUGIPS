@@ -44,7 +44,6 @@ export const AddArticles = () => {
       .then((response) => {
         // Handle success
         console.log('Article added:', response.data);
-console.log('dasd')
         // Clear the form fields
         setNewArticle({
           strTitle: '',
@@ -140,7 +139,9 @@ console.log('dasd')
               label="Publication Date"
               selected={newArticle.publicationDate}
               onChange={(date) => setNewArticle({ ...newArticle, publicationDate: date })}
-              dateFormat="MMMM d, yyyy"
+              dateFormat="MMMM d, yyyy : h:mm a"
+              showTimeSelect
+              timeFormat="h:mm aa"
               className="w-full px-3 py-2 border rounded"
             />
 

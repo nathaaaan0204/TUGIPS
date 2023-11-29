@@ -46,6 +46,7 @@ export const EditUser = () => {
   };
 
 
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -117,16 +118,17 @@ export const EditUser = () => {
                   {isPasswordVisible ? <EyeIcon className="w-6 h-6" /> : <EyeSlashIcon className="w-6 h-6" />}
                 </button>
               </div>
-              <Select
+              <select
                 label="Select Role"
                 name="strRole"
                 value={userData.strRole}
-                onChange={(e) => handleInputChange(e)}
+                onChange={handleInputChange}
+                className="border p-2 rounded"
               >
+                <option value="" disabled>Select a Role</option>
                 <option value="Admin">Admin</option>
                 <option value="Staff">Staff</option>
-              </Select>
-
+              </select>
               <Button type="submit" className="w-fit self-end">
                 Save Changes
               </Button>

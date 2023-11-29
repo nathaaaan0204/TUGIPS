@@ -8,12 +8,22 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import { Sidebar } from "../Components/Sidebar";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-const TABLE_HEAD = ["ID", "Title", "Category", "Description", "Writer", "Publication Date", "Photos", "Action"];
-const ITEMS_PER_PAGE = 10; // Number of items per page
+const TABLE_HEAD = [
+  "ID",
+  "Title",
+  "Category",
+  "Description",
+  "Writer",
+  "Publication Date",
+  "Status",
+  "Action",
+];
+const ITEMS_PER_PAGE = 10;
 
 export const ViewArticles = () => {
+  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [articles, setArticles] = useState([]);
@@ -24,7 +34,9 @@ export const ViewArticles = () => {
 
   const fetchArticles = async () => {
     try {
-      const response = await axios.get("https://localhost:44392/api/Article/GetArticles");
+      const response = await axios.get(
+        "https://localhost:44392/api/Article/GetArticles"
+      );
       setArticles(response.data.listArticle);
     } catch (error) {
       console.error("Error fetching articles:", error);
@@ -37,7 +49,7 @@ export const ViewArticles = () => {
     fetchArticles();
   }, []);
 
-  // Filter the rows based on the search query
+// Filter the rows based on the search query
   const filteredRows = articles.filter((row) =>
     Object.values(row).some((value) =>
       value.toString().toLowerCase().includes(searchQuery.toLowerCase())
@@ -55,6 +67,63 @@ export const ViewArticles = () => {
     setSearchQuery(e.target.value);
     setCurrentPage(1); // Reset to the first page when searching
   };
+  const handleArticleApproval = async (articleId) => {
+    try {
+      const response = await axios.post(
+        "https://localhost:44392/api/Article/ArticleApproval",
+        {
+          intArticleId: articleId,
+        }
+      );
+
+      // Handle the response as needed after approving the article
+      if (response.status === 200) {
+        console.log("Article Approved");
+
+        // Find the index of the approved user in the users array
+        const articleIndex = articles.findIndex(article => article.intArticleId === articleId);
+
+        // Update the status of the approved user in the users array
+        if (articleIndex !== -1) {
+          const updatedArticles = [...articles];
+          updatedArticles[articleIndex].isApproved = 1;
+          setArticles(updatedArticles);
+        }
+      } else {
+        console.log("Article Approval Failed");
+      }
+    } catch (error) {
+      console.error("Error approving article:", error);
+    }
+  };
+
+  const handleArticleDecline = async (articleId) => {
+    try {
+      const response = await axios.post(
+        "https://localhost:44392/api/Article/DeclineArticle",
+        { intArticleId: articleId }
+      );
+
+      // Handle the response as needed after declining the article
+      console.log(response.data);
+
+      // Find the index of the declined user in the articles array
+      const articleIndex = articles.findIndex((article) => article.intArticleId === articleId);
+
+      // Update the status of the declined article in the users array
+      if (articleIndex !== -1) {
+        const updatedAricles = [...articles];
+        updatedArticles[articleIndex].isApproved = 2;
+        setArticles(updatedArticles);
+      }
+    } catch (error) {
+      console.error("Error declining article:", error);
+    }
+  };
+
+  const handleArticleEdit = (articleId) => {
+    navigate(`/EditArticle/${articleId}`);
+  };
 
   return (
     <Fragment>
@@ -63,9 +132,7 @@ export const ViewArticles = () => {
         <div className="">
           <div className="flex justify-between">
             <Typography variant="h2">View Articles</Typography>
-            <Link to="/AddArticles">
-              <Button>Create Article</Button>
-            </Link>
+            <Link to="/AddArticles"><Button>Create Article</Button></Link>
           </div>
           <div className="mt-10">
             <Card className="h-full w-full overflow-scroll border">
@@ -106,18 +173,15 @@ export const ViewArticles = () => {
                     </tr>
                   ) : (
                     displayedRows.map(
-                      (
-                        {
-                          intArticleId,
-                          strTitle,
-                          strCategory,
-                          strDescription,
-                          strWriter,
-                          publicationDate,
-                          photos,
-                        },
-                        index
-                      ) => (
+                      ({
+                        intArticleId,
+                        strTitle,
+                        strCategory,
+                        strDescription,
+                        strWriter,
+                        publicationDate,
+                        isApproved,
+                      }) => (
                         <tr key={intArticleId} className="even:bg-blue-gray-50/50">
                           <td className="p-4">
                             <Typography
@@ -154,7 +218,7 @@ export const ViewArticles = () => {
                             >
                               {strDescription}
                             </Typography>
-                          </td>
+                            </td>
                           <td className="p-4">
                             <Typography
                               variant="small"
@@ -163,7 +227,7 @@ export const ViewArticles = () => {
                             >
                               {strWriter}
                             </Typography>
-                          </td>
+                            </td>
                           <td className="p-4">
                             <Typography
                               variant="small"
@@ -174,49 +238,53 @@ export const ViewArticles = () => {
                             </Typography>
                           </td>
                           <td className="p-4">
-                            {photos.map((photoUrl, photoIndex) => (
-                              <img
-                              key={photoIndex}
-                              src={photoUrl}
-                              alt={`Photo ${photoIndex + 1}`}
-                              className="w-20 h-20 object-cover rounded-full"
-                            />
-                            ))}
+                            {isApproved === 1 ? (
+                              <span className="text-green-500">Publish</span>
+                            ) : isApproved === 2 ? (
+                              <span className="text-red-500">Deleted</span>
+                            ) : (
+                              <span className="text-yellow-500">Pending</span>
+                            )}
                           </td>
                           <td className="p-4 flex gap-4">
-                            <Link to={`/EditArticle/${intArticleId}`}>
-                              <Typography
-                                as="a"
-                                href="#"
-                                variant="small"
-                                color="blue-gray"
-                                className="font-medium"
-                              >
-                                Edit
-                              </Typography>
-                            </Link>
-                            <button>
-                              <Typography
-                                as="a"
-                                href="#"
-                                variant="small"
-                                color="blue-gray"
-                                className="font-medium"
-                              >
-                                Delete
-                              </Typography>
-                            </button>
-                            <button>
-                              <Typography
-                                as="a"
-                                href="#"
-                                variant="small"
-                                color="blue-gray"
-                                className="font-medium"
-                              >
-                                Publish
-                              </Typography>
-                            </button>
+                            <Button
+                              onClick={() => handleArticleApproval(intArticleId)}
+                              color="blue"
+                              buttonType="filled"
+                              size="small"
+                              rounded={false}
+                              block={false}
+                              iconOnly={false}
+                              ripple="light"
+                              disabled={isApproved === 1} // Disable the button if already approved
+                            >
+                              Publish
+                            </Button>
+                            <Button
+                              onClick={() => handleArticleDecline(intArticleId)}
+                              color="red"
+                              buttonType="filled"
+                              size="small"
+                              rounded={false}
+                              block={false}
+                              iconOnly={false}
+                              ripple="light"
+                              disabled={isApproved === 1 || isApproved === 2}  // Disable the button if already approved
+                            >
+                              Deleted
+                            </Button>
+                            <Button
+                              onClick={() => handleArticleEdit(intArticleId)}
+                              color="orange"
+                              buttonType="filled"
+                              size="small"
+                              rounded={false}
+                              block={false}
+                              iconOnly={false}
+                              ripple="light"
+                            >
+                              Edit
+                            </Button>
                           </td>
                         </tr>
                       )
@@ -258,3 +326,5 @@ export const ViewArticles = () => {
     </Fragment>
   );
 };
+
+export default ViewArticles;

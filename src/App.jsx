@@ -40,7 +40,7 @@ const App = () => {
       <Route path="/DevelopmentalCommunication" element={<DevelopmentalCommunication />} />
       
       {/* Define the route for article details */}
-      <Route path="/article/:articleId" element={<ArticleDetail articles={articlesData} />} />
+      <Route path="/article/:intArticleId" element={<ArticleDetail articles={articlesData} />} />
 
       <Route path="/Login" element={<Login />} />
       <Route path="/Register" element={<Register />} />
@@ -50,7 +50,7 @@ const App = () => {
       <Route path="/EditUser/:intRegistrationId" element={<EditUser/>} />
       <Route path="/ViewArticles" element={<ViewArticles />} />
       <Route path="/AddArticles" element={<AddArticles />} />
-      <Route path="/EditArticle/:articleId" element={<EditArticle/>} />
+      <Route path="/EditArticle/:intArticleId" element={<EditArticle/>} />
 
 
     </Routes>

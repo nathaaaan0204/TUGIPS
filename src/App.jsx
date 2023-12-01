@@ -41,7 +41,6 @@ const App = () => {
       
       {/* Define the route for article details */}
       <Route path="/article/:intArticleId" element={<ArticleDetail articles={articlesData} />} />
-
       <Route path="/Login" element={<Login />} />
       <Route path="/Register" element={<Register />} />
       <Route path="/Dashboard" element={<Dashboard />} />

@@ -9,6 +9,7 @@ import {
 } from "@material-tailwind/react";
 import { Sidebar } from "../Components/Sidebar";
 import { Link, useNavigate } from "react-router-dom";
+import { SidebarComponent } from "../Components/SidebarComponent";
 
 const TABLE_HEAD = [
   "ID",
@@ -127,12 +128,17 @@ export const ViewArticles = () => {
 
   return (
     <Fragment>
-      <Sidebar />
-      <div className="ml-[20rem] p-10">
+      <SidebarComponent />
+      <div className="lg:ml-[20rem] h-screen py-16 px-8 flex flex-col gap-10">
         <div className="">
-          <div className="flex justify-between">
+          <div className="flex sm:justify-between gap-5 flex-wrap justify-center">
             <Typography variant="h2">View Articles</Typography>
-            <Link to="/AddArticles"><Button>Create Article</Button></Link>
+            <Link to="/AddArticles">
+              <Button className="  bg-green w-[200px]">
+              
+                Create Articles
+              </Button>
+            </Link>
           </div>
           <div className="mt-10">
             <Card className="h-full w-full overflow-scroll border">
@@ -301,7 +307,7 @@ export const ViewArticles = () => {
                   Page {currentPage} of {totalPages}
                 </Typography>
                 <div className="flex gap-2">
-                  <Button
+                  <Button className="border-green text-green"
                     variant="outlined"
                     size="sm"
                     onClick={() => handlePageChange(currentPage - 1)}
@@ -309,7 +315,7 @@ export const ViewArticles = () => {
                   >
                     Previous
                   </Button>
-                  <Button
+                  <Button className="border-green text-green"
                     variant="outlined"
                     size="sm"
                     onClick={() => handlePageChange(currentPage + 1)}

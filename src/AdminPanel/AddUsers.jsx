@@ -2,6 +2,7 @@ import { Button, Input, Option, Select, Typography } from '@material-tailwind/re
 import React, { Fragment, useState } from 'react';
 import { Sidebar } from '../Components/Sidebar';
 import axios from 'axios';
+import { SidebarComponent } from '../Components/SidebarComponent';
 
 export const AddUsers = ({ onAddUser }) => {
   const [newUser, setNewUser] = useState({
@@ -41,8 +42,8 @@ export const AddUsers = ({ onAddUser }) => {
 
   return (
     <Fragment>
-      <Sidebar />
-      <div className="ml-[20rem] p-10">
+      <SidebarComponent />
+      <div className="lg:ml-[20rem] h-screen py-16 px-8 flex flex-col">
         <Typography variant="h2">Add Users</Typography>
         <div className="bg-white border rounded-xl p-10 mt-10 shadow-lg">
           <Typography className="mb-5 text-xl font-semibold ">User Information</Typography>
@@ -87,7 +88,7 @@ export const AddUsers = ({ onAddUser }) => {
               <Option value="Staff">Staff</Option>
               <Option value="Admin">Admin</Option>
             </Select>
-            <Button onClick={handleAddUser} className="w-fit self-end">
+            <Button onClick={handleAddUser} className="bg-green sm:w-[200px] w-full self-end">
               Add User
             </Button>
           </form>

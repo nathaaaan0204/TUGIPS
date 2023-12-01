@@ -4,6 +4,7 @@ import { Sidebar } from '../Components/Sidebar';
 import { Button, Input, Select, Typography, Card, CardBody } from '@material-tailwind/react';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/solid';
 import axios from 'axios';
+import { SidebarComponent } from '../Components/SidebarComponent';
 
 export const EditUser = () => {
   const { intRegistrationId } = useParams();
@@ -78,8 +79,8 @@ export const EditUser = () => {
   }
   return (
     <Fragment>
-      <Sidebar />
-      <div className="ml-[20rem] p-10">
+      <SidebarComponent />
+      <div className="lg:ml-[20rem] h-screen py-16 px-8 flex flex-col gap-10">
         <div className="flex justify-between">
           <Typography variant="h2">Edit User</Typography>
           {successMessage && (
@@ -129,7 +130,7 @@ export const EditUser = () => {
                 <option value="Admin">Admin</option>
                 <option value="Staff">Staff</option>
               </select>
-              <Button type="submit" className="w-fit self-end">
+              <Button type="submit" className="bg-green sm:w-[200px] w-full self-end">
                 Save Changes
               </Button>
             </form>

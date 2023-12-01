@@ -4,6 +4,7 @@ import { Sidebar } from '../Components/Sidebar';
 import { Button, Input, Select, Typography, Card, CardBody } from '@material-tailwind/react';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/solid';
 import axios from 'axios';
+import { SidebarComponent } from '../Components/SidebarComponent';
 
 export const EditArticle = () => {
   const { intArticleId } = useParams();
@@ -74,8 +75,8 @@ export const EditArticle = () => {
   }, [intArticleId]);
   return (
     <Fragment>
-      <Sidebar />
-      <div className="ml-[20rem] p-10">
+      <SidebarComponent />
+      <div className="lg:ml-[20rem] h-screen py-16 px-8 flex flex-col gap-10">
         <div className="flex justify-between">
           <Typography variant="h2">Edit Article</Typography>
           {successMessage && (
@@ -99,7 +100,7 @@ export const EditArticle = () => {
               <Input label="Description" type="text" name="strDescription" value={articleData.strDescription} onChange={handleInputChange} placeholder="Description" />
               <Input label="Writer" type="text" name="strWriter" value={articleData.strWriter} onChange={handleInputChange} placeholder="Writer" />
               <Input label="Publication Date" type="text" name="publicationDate" value={articleData.publicationDate} onChange={handleInputChange} placeholder="Publication Date" />
-              <Button type="submit" className="w-fit self-end">
+              <Button type="submit" className="bg-green sm:w-[200px] w-full self-end">
                 Save Changes
               </Button>
             </form>

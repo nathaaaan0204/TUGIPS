@@ -9,6 +9,7 @@ import {
 } from "@material-tailwind/react";
 import { Sidebar } from "../Components/Sidebar";
 import { Link, useNavigate } from "react-router-dom";
+import { SidebarComponent } from "../Components/SidebarComponent";
 const TABLE_HEAD = ["ID", "Name", "Email", "Role", "Status", "Actions"];
 const ITEMS_PER_PAGE = 10; // Number of items per page
 
@@ -114,12 +115,16 @@ export const ViewUsers = () => {
 
   return (
     <Fragment>
-      <Sidebar />
-      <div className="ml-[20rem] p-10">
+      <SidebarComponent />
+      <div className="lg:ml-[20rem] h-screen py-16 px-8 flex flex-col gap-10">
         <div className="">
-          <div className="flex justify-between">
+        <div className="flex sm:justify-between gap-5 flex-wrap justify-center">
             <Typography variant="h2">View Users</Typography>
-            <Link to="/AddUsers"><Button>Create User</Button></Link>
+            <Link to="/AddUsers">
+              <Button className="  bg-green w-[200px]">
+              Create User
+              </Button>
+            </Link>
           </div>
           <div className="mt-10">
             <Card className="h-full w-full overflow-scroll border">
@@ -268,7 +273,7 @@ export const ViewUsers = () => {
                   Page {currentPage} of {totalPages}
                 </Typography>
                 <div className="flex gap-2">
-                  <Button
+                <Button className="border-green text-green"
                     variant="outlined"
                     size="sm"
                     onClick={() => handlePageChange(currentPage - 1)}
@@ -276,7 +281,7 @@ export const ViewUsers = () => {
                   >
                     Previous
                   </Button>
-                  <Button
+                  <Button className="border-green text-green"
                     variant="outlined"
                     size="sm"
                     onClick={() => handlePageChange(currentPage + 1)}

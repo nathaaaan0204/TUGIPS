@@ -4,6 +4,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { Sidebar } from '../Components/Sidebar';
 import axios from 'axios';
+import { SidebarComponent } from '../Components/SidebarComponent';
 
 export const AddArticles = () => {
   const [newArticle, setNewArticle] = useState({
@@ -88,8 +89,8 @@ export const AddArticles = () => {
 
   return (
     <Fragment>
-      <Sidebar />
-      <div className="ml-[20rem] p-10">
+      <SidebarComponent />
+      <div className="lg:ml-[20rem] h-screen py-16 px-8 flex flex-col">
         <Typography variant="h2">Add Articles</Typography>
         <div className="bg-white border rounded-xl p-10 mt-10 shadow-lg">
           <Typography className="mb-5 text-xl font-semibold ">
@@ -174,7 +175,7 @@ export const AddArticles = () => {
               </div>
             </div>
 
-            <Button onClick={handleAddArticle} className="w-fit self-end">
+            <Button onClick={handleAddArticle} className="bg-green sm:w-[200px] w-full self-end">
               Add Article
             </Button>
           </form>

@@ -2,7 +2,6 @@ import { Button, Input, Option, Select, Typography } from '@material-tailwind/re
 import React, { Fragment, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { Sidebar } from '../Components/Sidebar';
 import axios from 'axios';
 import { SidebarComponent } from '../Components/SidebarComponent';
 
@@ -30,18 +29,24 @@ export const AddArticles = () => {
     }
 
     // Prepare the article data to be sent to the server
-    const articleData = {
-      strTitle: newArticle.strTitle,
-      strCategory: newArticle.strCategory,
-      strDescription: newArticle.strDescription,
-      strWriter: newArticle.strWriter,
-      publicationDate: newArticle.publicationDate,
-      photos: newArticle.photos.map((photo) => photo.file.name), // Extract filenames from the photo objects
-    };
+    const formData = new FormData();
+    formData.append('strTitle', newArticle.strTitle);
+    formData.append('strCategory', newArticle.strCategory);
+    formData.append('strDescription', newArticle.strDescription);
+    formData.append('strWriter', newArticle.strWriter);
+    formData.append('publicationDate', newArticle.publicationDate);
+    newArticle.photos.forEach((photo) => {
+      formData.append('photos', photo.file);
+    });
 
-    // Send the article data to the server using Axios
+
+
     axios
-      .post('https://localhost:44392/api/Article/AddArticle', articleData)
+      .post('https://localhost:44392/api/Article/AddArticle', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
       .then((response) => {
         // Handle success
         console.log('Article added:', response.data);

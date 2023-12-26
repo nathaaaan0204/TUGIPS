@@ -1,6 +1,5 @@
 import { Button, Input, Option, Select, Typography } from '@material-tailwind/react';
 import React, { Fragment, useState } from 'react';
-import { Sidebar } from '../Components/Sidebar';
 import axios from 'axios';
 import { SidebarComponent } from '../Components/SidebarComponent';
 

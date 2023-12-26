@@ -7,7 +7,7 @@ import {
   CardFooter,
   Typography,
 } from "@material-tailwind/react";
-import { Sidebar } from "../Components/Sidebar";
+
 import { Link, useNavigate } from "react-router-dom";
 import { SidebarComponent } from "../Components/SidebarComponent";
 const TABLE_HEAD = ["ID", "Name", "Email", "Role", "Status", "Actions"];

@@ -49,17 +49,18 @@ export const Literary = () => {
             {articles
               .filter((article) => article.strCategory === "Literary")
               .map((article) => (
-                <li key={article.intArticleId}>
+                <li key={article.intArticleId} style={{ marginBottom: '10rem' }}>
                   <Link
                     to={`/article/${article.intArticleId}`}
                     className="h-full"
                   >
                     <Card className="mt-5 shadow-none hover:bg-light-green-100">
                       <CardBody className="flex flex-col lg:flex-row lg:h-72 gap-10 p-0">
-                        <img
+                      <img
                           src={article.photos}
                           alt="card-image"
-                          className="rounded-xl"
+                          style={{ width: '400px', height: '400px' }}
+                          className="rounded-xl object-cover"
                         />
                         <div className="flex flex-col gap-3 justify-center px-5 pb-5 lg:p-0">
                           <Typography className="text-green font-bold uppercase">

@@ -7,7 +7,7 @@ import {
   CardFooter,
   Typography,
 } from "@material-tailwind/react";
-import { Sidebar } from "../Components/Sidebar";
+
 import { Link, useNavigate } from "react-router-dom";
 import { SidebarComponent } from "../Components/SidebarComponent";
 

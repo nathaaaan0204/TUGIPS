@@ -1,5 +1,4 @@
 import React, { Fragment } from "react";
-import { Sidebar } from "../Components/Sidebar";
 import { Button, Typography } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
 import { SidebarComponent } from "../Components/SidebarComponent";

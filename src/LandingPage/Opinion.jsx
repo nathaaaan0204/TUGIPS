@@ -49,7 +49,7 @@ export const Opinion = () => {
             {articles
               .filter((article) => article.strCategory === "Opinion")
               .map((article) => (
-                <li key={article.intArticleId}>
+                <li key={article.intArticleId} className="mb-8">
                   <Link
                     to={`/article/${article.intArticleId}`}
                     className="h-full"
@@ -59,7 +59,8 @@ export const Opinion = () => {
                         <img
                           src={article.photos}
                           alt="card-image"
-                          className="rounded-xl"
+                          style={{ width: '500px', height: '400px' }}
+                          className="rounded-xl object-cover"
                         />
                         <div className="flex flex-col gap-3 justify-center px-5 pb-5 lg:p-0">
                           <Typography className="text-green font-bold uppercase">
@@ -77,7 +78,7 @@ export const Opinion = () => {
                               : article.strDescription}
                           </Typography>
                           <Typography className="font-medium text-light-gray">
-                          {article.strWriter}
+                            {article.strWriter}
                           </Typography>
                         </div>
                       </CardBody>

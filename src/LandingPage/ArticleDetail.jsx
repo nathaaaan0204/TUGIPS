@@ -42,14 +42,19 @@ export const ArticleDetail = () => {
         >
           {article.listArticle[0].strTitle}
         </Typography>
-        <img
-          src={
-            article.listArticle[0].photos[0]?.strPhotoUrl ||
-            "https://images.unsplash.com/photo-1540553016722-983e48a2cd10?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80"
-          }
-          alt="Article"
-          className="w-full h-[500px] object-cover rounded-xl"
-        />
+        <div className="flex flex-wrap gap-4">
+          {article.listArticle[0].photos.map((photoUrl, index) => (
+            <img
+              key={index}
+              src={photoUrl}
+              alt="Article"
+              style={{ width: '400px', height: '400px' }}
+              className="object-cover rounded-xl"
+            />
+          ))}
+
+
+        </div>
 
         <Typography color="black">
           {article.listArticle[0].strDescription}
@@ -70,4 +75,5 @@ export const ArticleDetail = () => {
       <Footer />
     </Fragment>
   );
+
 };

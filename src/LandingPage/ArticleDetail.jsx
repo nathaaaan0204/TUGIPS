@@ -27,7 +27,9 @@ export const ArticleDetail = () => {
   if (!article) {
     return <div>Loading...</div>;
   }
-
+  const handleFileSelect = (event) => {
+    setSelectedFile(event.target.files[0]);
+  };
   return (
     <Fragment>
       <NavigationBar />
@@ -44,19 +46,29 @@ export const ArticleDetail = () => {
         </Typography>
         <div className="flex flex-wrap gap-4">
           {article.listArticle[0].photos.map((photoUrl, index) => (
-            <img
-              key={index}
-              src={photoUrl}
-              alt="Article"
-              style={{ width: '400px', height: '400px' }}
-              className="object-cover rounded-xl"
-            />
+            <div key={index}>
+              {photoUrl.toLowerCase().endsWith('.mp4') ? (
+                <video
+                  src={photoUrl}
+                  alt="Article"
+                  style={{ width: '400px', height: '400px' }}
+                  className="object-cover rounded-xl"
+                  controls
+                />
+              ) : (
+                <img
+                  src={photoUrl}
+                  alt="Article"
+                  style={{ width: '400px', height: '400px' }}
+                  className="object-cover rounded-xl"
+                />
+              )}
+            </div>
           ))}
-
-
         </div>
+        
 
-        <Typography color="black">
+        <Typography color="black" style={{ lineHeight: '2', whiteSpace: 'pre-line' }}>
           {article.listArticle[0].strDescription}
         </Typography>
         <Typography>

@@ -11,14 +11,16 @@ export const Literary = () => {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const response = await axios.get('https://localhost:44392/api/Article/GetArticles');
-        const allArticles = response.data.listArticle;
-        const developmentalCommunicationArticles = allArticles.filter(
-          (article) => article.strCategory === 'Literary'
+        const response = await axios.get(
+          "https://localhost:44392/api/Article/GetArticles"
         );
-        setArticles(developmentalCommunicationArticles);
+        const allArticles = response.data.listArticle;
+        const LiteraryArticles = allArticles.filter(
+          (article) => article.strCategory === "Literary"
+        );
+        setArticles(LiteraryArticles);
       } catch (error) {
-        console.error('Error fetching articles:', error);
+        console.error("Error fetching articles:", error);
       }
     };
 
@@ -36,6 +38,7 @@ export const Literary = () => {
       </Fragment>
     );
   }
+
   return (
     <Fragment>
       <NavigationBar />
@@ -46,46 +49,58 @@ export const Literary = () => {
         <div className="max-w-[80rem]">
           <h2 className="text-2xl font-bold mb-4">ARTICLES</h2>
           <ul>
-            {articles
-              .filter((article) => article.strCategory === "Literary")
-              .map((article) => (
-                <li key={article.intArticleId} style={{ marginBottom: '10rem' }}>
-                  <Link
-                    to={`/article/${article.intArticleId}`}
-                    className="h-full"
-                  >
-                    <Card className="mt-5 shadow-none hover:bg-light-green-100">
-                      <CardBody className="flex flex-col lg:flex-row lg:h-72 gap-10 p-0">
-                      <img
-                          src={article.photos}
-                          alt="card-image"
-                          style={{ width: '400px', height: '400px' }}
-                          className="rounded-xl object-cover"
-                        />
-                        <div className="flex flex-col gap-3 justify-center px-5 pb-5 lg:p-0">
-                          <Typography className="text-green font-bold uppercase">
-                            {article.strCategory}
-                          </Typography>
-                          <Typography
-                            className="lg:text-3xl md:text-2xl text-xl font-semibold"
-                            color="black"
-                          >
-                            {article.strTitle}{" "}
-                          </Typography>
-                          <Typography color="black">
-                            {article.strDescription.length > 50
-                              ? `${article.strDescription.substring(0, 200)}...`
-                              : article.strDescription}
-                          </Typography>
-                          <Typography className="font-medium text-light-gray">
+            {articles.map((article) => (
+              <li key={article.intArticleId}>
+                <Link to={`/article/${article.intArticleId}`} className="h-full">
+                  <Card className="mt-5 shadow-none hover:bg-light-green-100">
+                    <CardBody className="flex flex-col lg:flex-row lg:h-72 gap-10 p-0">
+                      {article.strCategory === "Literary" && article.photos && article.photos.length > 0 ? (
+                        <>
+                          {typeof article.photos[0] === "string" &&
+                            article.photos[0].toLowerCase().endsWith(".mp4") ? (
+                            <video
+                              key={article.intArticleId}
+                              className="rounded-xl"
+                              style={{ width: '400px', height: '400px' }}// Adjust the width and height as desired
+                              controls
+                            >
+                              <source src={article.photos[0]} type="video/mp4" />
+                              Your browser does not support the video tag.
+                            </video>
+                          ) : (
+                            <img
+                              src={article.photos[0]}
+                              alt="Article Image"
+                              className="rounded-xl"
+                              style={{ width: '400px', height: '400px' }} // Adjust the width and height as desired
+                            />
+                          )}
+                        </>
+                      ) : null}
+                      <div className="flex flex-col gap-3 justify-center px-5 pb-5 lg:p-0">
+                        <Typography className="text-green font-bold uppercase">
+                          {article.strCategory}
+                        </Typography>
+                        <Typography
+                          className="lg:text-3xl md:text-2xl text-xl font-semibold"
+                          color="black"
+                        >
+                          {article.strTitle}
+                        </Typography>
+                        <Typography color="black">
+                          {article.strDescription.length > 50
+                            ? `${article.strDescription.substring(0, 200)}...`
+                            : article.strDescription}
+                        </Typography>
+                        <Typography className="font-medium text-light-gray">
                           {article.strWriter}
-                          </Typography>
-                        </div>
-                      </CardBody>
-                    </Card>
-                  </Link>
-                </li>
-              ))}
+                        </Typography>
+                      </div>
+                    </CardBody>
+                  </Card>
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
       </div>

@@ -15,10 +15,10 @@ export const News = () => {
           "https://localhost:44392/api/Article/GetArticles"
         );
         const allArticles = response.data.listArticle;
-        const newsArticles = allArticles.filter(
+        const sportsArticles = allArticles.filter(
           (article) => article.strCategory === "News"
         );
-        setArticles(newsArticles);
+        setArticles(sportsArticles);
       } catch (error) {
         console.error("Error fetching articles:", error);
       }
@@ -50,16 +50,33 @@ export const News = () => {
           <h2 className="text-2xl font-bold mb-4">ARTICLES</h2>
           <ul>
             {articles.map((article) => (
-              <li key={article.intArticleId} style={{ marginBottom: '10rem' }}>
+              <li key={article.intArticleId}>
                 <Link to={`/article/${article.intArticleId}`} className="h-full">
                   <Card className="mt-5 shadow-none hover:bg-light-green-100">
                     <CardBody className="flex flex-col lg:flex-row lg:h-72 gap-10 p-0">
-                    <img
-                          src={article.photos}
-                          alt="card-image"
-                          style={{ width: '400px', height: '400px' }}
-                          className="rounded-xl object-cover"
-                        />
+                      {article.strCategory === "News" && article.photos && article.photos.length > 0 ? (
+                        <>
+                          {typeof article.photos[0] === "string" &&
+                            article.photos[0].toLowerCase().endsWith(".mp4") ? (
+                            <video
+                              key={article.intArticleId}
+                              className="rounded-xl"
+                              style={{ width: '500px', height: '400px' }}// Adjust the width and height as desired
+                              controls
+                            >
+                              <source src={article.photos[0]} type="video/mp4" />
+                              Your browser does not support the video tag.
+                            </video>
+                          ) : (
+                            <img
+                              src={article.photos[0]}
+                              alt="Article Image"
+                              className="rounded-xl"
+                              style={{ width: '500px', height: '400px' }} // Adjust the width and height as desired
+                            />
+                          )}
+                        </>
+                      ) : null}
                       <div className="flex flex-col gap-3 justify-center px-5 pb-5 lg:p-0">
                         <Typography className="text-green font-bold uppercase">
                           {article.strCategory}

@@ -38,10 +38,38 @@ export const Login = () => {
             alert("Admin login successful");
             navigate("/Dashboard");
             console.log("Admin logged in:", dt);
-          } else if (role === "Staff") {
-            alert("Staff login successful");
-            navigate("/Dashboard");
-            console.log("Staff logged in:", dt);
+          } else if (role === "News Staff") {
+            alert("News Staff login successful");
+            navigate("/NewsStaffDashboard");
+            console.log("News Staff logged in:", dt);
+          } else if (role === "Features Staff") {
+            alert("Features Staff login successful");
+            navigate("/FeaturesStaffDashboard");
+            console.log("Features Staff logged in:", dt);
+          } else if (role === "Opinions Staff") {
+            alert("Opinions Staff login successful");
+            navigate("/OpinionsStaffDashboard");
+            console.log("Opinions Staff logged in:", dt);
+          } else if (role === "Literary Staff") {
+            alert("Literary Staff login successful");
+            navigate("/LiteraryStaffDashboard");
+            console.log("Literary Staff logged in:", dt);
+          } else if (role === "Sports Staff") {
+            alert("Sports Staff login successful");
+            navigate("/SportsStaffDashboard");
+            console.log("SportsStaff logged in:", dt);
+          } else if (role === "Development Staff") {
+            alert("Development Staff login successful");
+            navigate("/DevelopmentsStaffDashboard");
+            console.log("DevelopmentStaff logged in:", dt);
+          } else if (role === "Student") {
+            alert("Student login successful");
+            navigate("/StudentDashboard");
+            console.log("Student logged in:", dt);
+          } else if (role === "EIC") {
+            alert("EIC login successful");
+            navigate("/EicDashboard");
+            console.log("EIC logged in:", dt);
           } else {
             alert("Invalid role");
             console.log("Invalid role:", dt);

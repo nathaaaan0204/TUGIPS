@@ -15,7 +15,8 @@ export const EditUser = () => {
     strUsername: '',
     strEmail: '',
     strPassword: '',
-    strRole: ''
+    strRole: '',
+    photo: []
   });
 
   const getUserData = async () => {
@@ -45,19 +46,33 @@ export const EditUser = () => {
       [name]: value,
     }));
   };
-
+  const handleRoleChange = (value) => {
+    setUserData((prevUserData) => ({
+      ...prevUserData,
+      strRole: value,
+    }));
+  };
   const handleSubmit = (e) => {
     e.preventDefault();
-
+  
     axios
       .put(`https://localhost:44392/api/Registration/EditRegistration/${intRegistrationId}`, userData)
       .then((response) => {
         console.log('User data updated:', response.data);
-
+  
         setSuccessMessage('Changes saved successfully');
         setTimeout(() => {
           setSuccessMessage('');
         }, 3000);
+  
+        // Clear the form after successful submission
+        setUserData({
+          strName: '',
+          strUsername: '',
+          strEmail: '',
+          strPassword: '',
+          strRole: ''
+        });
       })
       .catch((error) => {
         console.error('Error updating user data:', error);
@@ -132,18 +147,25 @@ export const EditUser = () => {
                   placeholder="Password"
                   className="px-4 py-2 text-base border border-gray-300 rounded outline-none focus:ring-blue-500 focus:border-blue-500 focus:ring-1"
                 />
-                <button className="absolute inset-y-0 right-0 flex items-center px-4 text-gray-600"onClick={togglePasswordVisibility}>
+                <button className="absolute inset-y-0 right-0 flex items-center px-4 text-gray-600" onClick={togglePasswordVisibility}>
                   {isPasswordVisible ? <EyeIcon className="w-6 h-6" /> : <EyeSlashIcon className="w-6 h-6" />}
                 </button>
               </div>
               <Select
                 label="Select a Role"
                 value={userData.strRole}
-                onChange={(e) => handleInputChange({ target: { name: 'strRole', value: e.target.value } })}
+                onChange={handleRoleChange}
                 placeholder="Select a Role"
               >
+                <Select.Option value="EIC">EIC</Select.Option>
                 <Select.Option value="Admin">Admin</Select.Option>
-                <Select.Option value="Staff">Staff</Select.Option>
+                <Select.Option value="News Staff">News Staff</Select.Option>
+                <Select.Option value="Features Staff">Features Staff</Select.Option>
+                <Select.Option value="Opinions Staff">Opinions Staff</Select.Option>
+                <Select.Option value="Literary Staff">Literary Staff</Select.Option>
+                <Select.Option value="Sports Staff">Sports Staff</Select.Option>
+                <Select.Option value="Development Staff">Development Staff</Select.Option>
+                <Select.Option value="Student">Student</Select.Option>
               </Select>
               <Button type="submit" className="bg-green sm:w-[200px] w-full self-end">
                 Save Changes

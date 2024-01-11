@@ -3,9 +3,9 @@ import React, { Fragment, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import axios from 'axios';
-import { SidebarComponent } from '../Components/SidebarComponent';
+import { StudentSidebarComponents } from '../Components/StudentSidebarComponents';
 
-export const AddArticles = () => {
+export const StudentAddArticles = () => {
   const [newArticle, setNewArticle] = useState({
     strTitle: '',
     strCategory: '',
@@ -105,7 +105,7 @@ export const AddArticles = () => {
 
   return (
     <Fragment>
-      <SidebarComponent />
+      <StudentSidebarComponents />
       <div className="lg:ml-[20rem] h-screen py-16 px-8 flex flex-col">
         <Typography variant="h2">Add Articles</Typography>
         <div className="bg-white border rounded-xl p-10 mt-10 shadow-lg">

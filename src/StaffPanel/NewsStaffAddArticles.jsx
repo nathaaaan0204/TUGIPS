@@ -3,9 +3,9 @@ import React, { Fragment, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import axios from 'axios';
-import { SidebarComponent } from '../Components/SidebarComponent';
+import { NewsStaffSidebarComponents } from '../Components/NewsStaffSidebarComponents';
 
-export const AddArticles = () => {
+export const NewsStaffAddArticles = () => {
   const [newArticle, setNewArticle] = useState({
     strTitle: '',
     strCategory: '',
@@ -105,7 +105,7 @@ export const AddArticles = () => {
 
   return (
     <Fragment>
-      <SidebarComponent />
+      <NewsStaffSidebarComponents />
       <div className="lg:ml-[20rem] h-screen py-16 px-8 flex flex-col">
         <Typography variant="h2">Add Articles</Typography>
         <div className="bg-white border rounded-xl p-10 mt-10 shadow-lg">
@@ -127,13 +127,7 @@ export const AddArticles = () => {
               onChange={(value) => setNewArticle({ ...newArticle, strCategory: value })}
             >
               <Option value="News">News</Option>
-              <Option value="Feature">Feature</Option>
-              <Option value="Opinion">Opinion</Option>
-              <Option value="Literary">Literary</Option>
-              <Option value="Sports">Sports</Option>
-              <Option value="Developmental Communication">
-                Developmental Communication
-              </Option>
+             
             </Select>
 
             <textarea

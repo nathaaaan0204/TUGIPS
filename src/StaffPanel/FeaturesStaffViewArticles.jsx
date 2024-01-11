@@ -9,37 +9,52 @@ import {
 } from "@material-tailwind/react";
 
 import { Link, useNavigate } from "react-router-dom";
-import { SidebarComponent } from "../Components/SidebarComponent";
-const TABLE_HEAD = ["ID", "Name", "Email", "Role", "Status", "Actions"];
-const ITEMS_PER_PAGE = 10; // Number of items per page
+import { FeaturesStaffSidebarComponents } from "../Components/FeaturesStaffSidebarComponents";
 
-export const ViewUsers = () => {
+const TABLE_HEAD = [
+  "ID",
+  "Title",
+  "Category",
+  "Description",
+  "Volume",
+  "Writer",
+  "Publication Date",
+  "Status",
+  "Action",
+  "Feedback"
+];
+const ITEMS_PER_PAGE = 10;
+
+export const FeaturesStaffViewArticles = () => {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-  const [users, setUsers] = useState([]);
+  const [articles, setArticles] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
 
-  const fetchUsers = async () => {
-    try {
-      const response = await axios.get("https://localhost:44392/api/Registration/GetRegistration");
-      setUsers(response.data.listRegistration);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchUsers();
+    const fetchArticles = async () => {
+      try {
+        const response = await axios.get(
+          "https://localhost:44392/api/Article/GetArticles"
+        );
+        const allArticles = response.data.listArticle;
+        const newsArticles = allArticles.filter(
+          (article) => article.strCategory === "Feature"
+        );
+        setArticles(newsArticles);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching articles:", error);
+      }
+    }; 
+    fetchArticles();
   }, []);
-
   // Filter the rows based on the search query
-  const filteredRows = users.filter((row) =>
+  const filteredRows = articles.filter((row) =>
     Object.values(row).some((value) =>
       value.toString().toLowerCase().includes(searchQuery.toLowerCase())
     )
@@ -56,73 +71,21 @@ export const ViewUsers = () => {
     setSearchQuery(e.target.value);
     setCurrentPage(1); // Reset to the first page when searching
   };
-  const handleUserApproval = async (registrationId) => {
-    try {
-      const response = await axios.post(`https://localhost:44392/api/Registration/UserApproval`, {
-        intRegistrationId: registrationId
-      });
-
-      // Handle the response as needed after approving the user
-      if (response.status === 200) {
-        console.log("User Approved");
-
-        // Find the index of the approved user in the users array
-        const userIndex = users.findIndex(user => user.intRegistrationId === registrationId);
-
-        // Update the status of the approved user in the users array
-        if (userIndex !== -1) {
-          const updatedUsers = [...users];
-          updatedUsers[userIndex].isApproved= 1;
-          setUsers(updatedUsers);
-        }
-      } else {
-        console.log("User Approval Failed");
-      }
-    } catch (error) {
-      // Handle the error if the user approval fails
-      console.error(error);
-    }
-  };
-
-  const handleUserDecline = async (registrationId) => {
-    try {
-      const response = await axios.post(
-        "https://localhost:44392/api/Registration/DeclineUser",
-        { intRegistrationId: registrationId }
-      );
-
-      // Handle the response as needed after declining the user
-      console.log(response.data);
-
-      // Find the index of the declined user in the users array
-      const userIndex = users.findIndex((user) => user.intRegistrationId === registrationId);
-
-      // Update the status of the declined user in the users array
-      if (userIndex !== -1) {
-        const updatedUsers = [...users];
-        updatedUsers[userIndex].isApproved= 2;
-        setUsers(updatedUsers);
-      }
-    } catch (error) {
-      // Handle the error if the user decline fails
-      console.error(error);
-    }
-  };
-  const handleUserEdit = (registrationId) => {
-    // Navigate to the EditUser component passing the registrationId as a route parameter
-    navigate(`/EditUser/${registrationId}`);
+  const handleArticleEdit = (articleId) => {
+    navigate(`/StaffEditArticles/${articleId}`);
   };
 
   return (
     <Fragment>
-      <SidebarComponent />
+      <FeaturesStaffSidebarComponents />
       <div className="lg:ml-[20rem] h-screen py-16 px-8 flex flex-col gap-10">
         <div className="">
-        <div className="flex sm:justify-between gap-5 flex-wrap justify-center">
-            <Typography variant="h2">View Users</Typography>
-            <Link to="/AddUsers">
+          <div className="flex sm:justify-between gap-5 flex-wrap justify-center">
+            <Typography variant="h2">View Articles</Typography>
+            <Link to="/AddArticles">
               <Button className="  bg-green w-[200px]">
-              Create User
+
+                Create Articles
               </Button>
             </Link>
           </div>
@@ -160,26 +123,39 @@ export const ViewUsers = () => {
                   {isLoading ? (
                     <tr>
                       <td colSpan={TABLE_HEAD.length} className="p-4">
-                        Loading users...
+                        Loading articles...
                       </td>
                     </tr>
                   ) : (
                     displayedRows.map(
                       ({
-                        intRegistrationId,
-                        strName,
-                        strEmail,
-                        strRole,
+                        intArticleId,
+                        strTitle,
+                        strCategory,
+                        strDescription,
+                        strWriter,
+                        publicationDate,
                         isApproved,
+                        strFeedback,
+                        strVolume
                       }) => (
-                        <tr key={intRegistrationId} className="even:bg-blue-gray-50/50">
+                        <tr key={intArticleId} className="even:bg-blue-gray-50/50">
                           <td className="p-4">
                             <Typography
                               variant="small"
                               color="blue-gray"
                               className="font-normal"
                             >
-                              {intRegistrationId}
+                              {intArticleId}
+                            </Typography>
+                          </td>
+                          <td className="p-4">
+                            <Typography
+                              variant="small"
+                              color="blue-gray"
+                              className="font-normal double-spacing"
+                            >
+                              {strTitle.length > 15 ? `${strTitle.substring(0, 15)}...` : strTitle}
                             </Typography>
                           </td>
                           <td className="p-4">
@@ -188,7 +164,16 @@ export const ViewUsers = () => {
                               color="blue-gray"
                               className="font-normal"
                             >
-                              {strName}
+                              {strCategory}
+                            </Typography>
+                          </td>
+                          <td className="p-4">
+                            <Typography
+                              variant="small"
+                              color="blue-gray"
+                              className="font-normal double-spacing"
+                            >
+                              {strDescription.length > 20 ? `${strDescription.substring(0, 20)}...` : strDescription}
                             </Typography>
                           </td>
                           <td className="p-4">
@@ -197,7 +182,7 @@ export const ViewUsers = () => {
                               color="blue-gray"
                               className="font-normal"
                             >
-                              {strEmail}
+                              {strVolume}
                             </Typography>
                           </td>
                           <td className="p-4">
@@ -206,47 +191,34 @@ export const ViewUsers = () => {
                               color="blue-gray"
                               className="font-normal"
                             >
-                              {strRole}
+                              {strWriter}
                             </Typography>
                           </td>
                           <td className="p-4">
-                            {isApproved=== 1 ? (
-                              <span className="text-green-500">Approved</span>
-                            ) : isApproved=== 2 ? (
-                              <span className="text-red-500">Deleted</span>
-                            ) : (
+                            <Typography
+                              variant="small"
+                              color="blue-gray"
+                              className="font-normal"
+                            >
+                              {publicationDate}
+                            </Typography>
+                          </td>
+                          <td className="p-4">
+                            {isApproved === 1 ? (
+                              <span className="text-green-500">Publish</span>
+                            ) : isApproved === 2 ? (
+                              <span className="text-red-500">Decline</span>
+                            ) : isApproved === 3 ? (
+                              <span className="text-red-500">Submitted</span>
+                            )
+                            : (
                               <span className="text-yellow-500">Pending</span>
                             )}
                           </td>
                           <td className="p-4 flex gap-4">
+                            
                             <Button
-                              onClick={() => handleUserApproval(intRegistrationId)}
-                              color="blue"
-                              buttonType="filled"
-                              size="small"
-                              rounded={false}
-                              block={false}
-                              iconOnly={false}
-                              ripple="light"
-                              disabled={isApproved=== 1} // Disable the button if already approved
-                            >
-                              Approve
-                            </Button>
-                            <Button
-                              onClick={() => handleUserDecline(intRegistrationId)}
-                              color="red"
-                              buttonType="filled"
-                              size="small"
-                              rounded={false}
-                              block={false}
-                              iconOnly={false}
-                              ripple="light"
-                              disabled={isApproved=== 1 || isApproved=== 2}  // Disable the button if already approved
-                            >
-                              Decline
-                            </Button>
-                            <Button
-                              onClick={() => handleUserEdit(intRegistrationId)}
+                              onClick={() => handleArticleEdit(intArticleId)}
                               color="orange"
                               buttonType="filled"
                               size="small"
@@ -257,7 +229,13 @@ export const ViewUsers = () => {
                             >
                               Edit
                             </Button>
+                            </td>
+                          <td className="p-4">
+                            <Typography variant="small" color="blue-gray" className="font-normal">
+                              {strFeedback}
+                            </Typography>
                           </td>
+                          
                         </tr>
                       )
                     )
@@ -273,7 +251,7 @@ export const ViewUsers = () => {
                   Page {currentPage} of {totalPages}
                 </Typography>
                 <div className="flex gap-2">
-                <Button className="border-green text-green"
+                  <Button className="border-green text-green"
                     variant="outlined"
                     size="sm"
                     onClick={() => handlePageChange(currentPage - 1)}
@@ -299,4 +277,4 @@ export const ViewUsers = () => {
   );
 };
 
-export default ViewUsers;
+export default FeaturesStaffViewArticles;

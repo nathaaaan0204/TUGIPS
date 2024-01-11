@@ -16,10 +16,12 @@ const TABLE_HEAD = [
   "Title",
   "Category",
   "Description",
+  "Volume",
   "Writer",
   "Publication Date",
   "Status",
   "Action",
+  "Feedback"
 ];
 const ITEMS_PER_PAGE = 10;
 
@@ -50,7 +52,7 @@ export const ViewArticles = () => {
     fetchArticles();
   }, []);
 
-// Filter the rows based on the search query
+  // Filter the rows based on the search query
   const filteredRows = articles.filter((row) =>
     Object.values(row).some((value) =>
       value.toString().toLowerCase().includes(searchQuery.toLowerCase())
@@ -87,6 +89,7 @@ export const ViewArticles = () => {
         // Update the status of the approved user in the users array
         if (articleIndex !== -1) {
           const updatedArticles = [...articles];
+
           updatedArticles[articleIndex].isApproved = 1;
           setArticles(updatedArticles);
         }
@@ -104,16 +107,16 @@ export const ViewArticles = () => {
         "https://localhost:44392/api/Article/DeclineArticle",
         { intArticleId: articleId }
       );
-
+  
       // Handle the response as needed after declining the article
       console.log(response.data);
-
+  
       // Find the index of the declined user in the articles array
       const articleIndex = articles.findIndex((article) => article.intArticleId === articleId);
-
+  
       // Update the status of the declined article in the users array
       if (articleIndex !== -1) {
-        const updatedAricles = [...articles];
+        const updatedArticles = [...articles];
         updatedArticles[articleIndex].isApproved = 2;
         setArticles(updatedArticles);
       }
@@ -121,6 +124,7 @@ export const ViewArticles = () => {
       console.error("Error declining article:", error);
     }
   };
+  
 
   const handleArticleEdit = (articleId) => {
     navigate(`/EditArticle/${articleId}`);
@@ -135,7 +139,7 @@ export const ViewArticles = () => {
             <Typography variant="h2">View Articles</Typography>
             <Link to="/AddArticles">
               <Button className="  bg-green w-[200px]">
-              
+
                 Create Articles
               </Button>
             </Link>
@@ -187,6 +191,8 @@ export const ViewArticles = () => {
                         strWriter,
                         publicationDate,
                         isApproved,
+                        strFeedback,
+                        strVolume
                       }) => (
                         <tr key={intArticleId} className="even:bg-blue-gray-50/50">
                           <td className="p-4">
@@ -202,9 +208,9 @@ export const ViewArticles = () => {
                             <Typography
                               variant="small"
                               color="blue-gray"
-                              className="font-normal"
+                              className="font-normal double-spacing"
                             >
-                              {strTitle}
+                              {strTitle.length > 15 ? `${strTitle.substring(0, 15)}...` : strTitle}
                             </Typography>
                           </td>
                           <td className="p-4">
@@ -220,11 +226,20 @@ export const ViewArticles = () => {
                             <Typography
                               variant="small"
                               color="blue-gray"
+                              className="font-normal double-spacing"
+                            >
+                              {strDescription.length > 20 ? `${strDescription.substring(0, 20)}...` : strDescription}
+                            </Typography>
+                          </td>
+                          <td className="p-4">
+                            <Typography
+                              variant="small"
+                              color="blue-gray"
                               className="font-normal"
                             >
-                              {strDescription}
+                              {strVolume}
                             </Typography>
-                            </td>
+                          </td>
                           <td className="p-4">
                             <Typography
                               variant="small"
@@ -233,7 +248,7 @@ export const ViewArticles = () => {
                             >
                               {strWriter}
                             </Typography>
-                            </td>
+                          </td>
                           <td className="p-4">
                             <Typography
                               variant="small"
@@ -247,8 +262,11 @@ export const ViewArticles = () => {
                             {isApproved === 1 ? (
                               <span className="text-green-500">Publish</span>
                             ) : isApproved === 2 ? (
-                              <span className="text-red-500">Deleted</span>
-                            ) : (
+                              <span className="text-red-500">Decline</span>
+                            ) : isApproved === 3 ? (
+                              <span className="text-red-500">Submitted</span>
+                            )
+                            : (
                               <span className="text-yellow-500">Pending</span>
                             )}
                           </td>
@@ -277,7 +295,7 @@ export const ViewArticles = () => {
                               ripple="light"
                               disabled={isApproved === 1 || isApproved === 2}  // Disable the button if already approved
                             >
-                              Deleted
+                              Decline
                             </Button>
                             <Button
                               onClick={() => handleArticleEdit(intArticleId)}
@@ -291,7 +309,13 @@ export const ViewArticles = () => {
                             >
                               Edit
                             </Button>
+                            </td>
+                          <td className="p-4">
+                            <Typography variant="small" color="blue-gray" className="font-normal">
+                              {strFeedback}
+                            </Typography>
                           </td>
+                          
                         </tr>
                       )
                     )

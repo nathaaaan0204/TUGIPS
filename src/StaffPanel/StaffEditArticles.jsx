@@ -1,17 +1,12 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { useParams } from 'react-router-dom';
+import { Button, Input, Option, Select, Typography, Card, CardBody } from '@material-tailwind/react';
 import axios from 'axios';
 import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-datepicker';
-import { InputLabel, TextareaAutosize } from '@material-ui/core';
+import { NewsStaffSidebarComponents } from '../Components/NewsStaffSidebarComponents';
 
-// Material-UI imports
-import { Button, Input, Option, Select, Typography, Card, CardBody } from '@material-tailwind/react';
-
-// Local component import
-import { SidebarComponent } from '../Components/SidebarComponent';
-
-export const EditArticle = () => {
+export const StaffEditArticles = () => {
   const { intArticleId } = useParams();
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -20,10 +15,8 @@ export const EditArticle = () => {
     strCategory: '',
     strDescription: '',
     strWriter: '',
-    strFeedback: '',
     publicationDate: new Date(),
     photos: [],
-    strVolume: '',
   });
 
   const getArticleData = async () => {
@@ -39,10 +32,8 @@ export const EditArticle = () => {
           strCategory: article.strCategory,
           strDescription: article.strDescription,
           strWriter: article.strWriter,
-          strFeedback: article.strFeedback,
           publicationDate: new Date(article.publicationDate),
           photos: article.photos.map((photo) => ({ url: photo })),
-          strVolume: article.strVolume, // Add strVolume
         }));
       } else {
         setErrorMessage('No article data found');
@@ -66,24 +57,28 @@ export const EditArticle = () => {
   const handleInputChange = (event) => {
     const { name, value } = event.target;
 
-    if (event.key === 'Enter' && name === 'strDescription') {
-      event.preventDefault();
-      setArticleData((prevArticleData) => ({
-        ...prevArticleData,
-        [name]: `${value}\n`,
-      }));
-    } else if (name === 'strFeedback') { // Handle strFeedback separately
-      setArticleData((prevArticleData) => ({
-        ...prevArticleData,
-        strFeedback: value,
-      }));
-    } else {
-      setArticleData((prevArticleData) => ({
-        ...prevArticleData,
-        [name]: value,
-      }));
-    }
+    setArticleData((prevArticleData) => ({
+      ...prevArticleData,
+      [name]: value,
+    }));
   };
+
+  const handlePhotoUpload = (event) => {
+    const files = event.target.files;
+    const uploadedPhotos = Array.from(files);
+
+    const uploadedPhotosWithData = uploadedPhotos.map((file) => ({
+      file: file,
+      preview: URL.createObjectURL(file), // Generate the preview URL for the photo
+    }));
+
+    setNewArticle((prevArticle) => ({
+      ...prevArticle,
+      photos: prevArticle.photos.concat(uploadedPhotosWithData),
+    }));
+  };
+
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -106,59 +101,6 @@ export const EditArticle = () => {
       });
   };
 
-  const handlePhotoUpload = (files) => {
-    const updatedPhotosWithData = [];
-    const filePromises = [];
-
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      const fileReader = new FileReader();
-
-      filePromises.push(
-        new Promise((resolve) => {
-          fileReader.onload = (event) => {
-            const dataUrl = event.target.result;
-            const fileType = file.type.startsWith('image') ? 'photo' : 'video';
-
-            updatedPhotosWithData.push({ file, dataUrl, fileType });
-            resolve();
-          };
-
-          fileReader.readAsDataURL(file);
-        })
-      );
-    }
-
-    Promise.all(filePromises).then(() => {
-      setArticleData((prevArticleData) => ({
-        ...prevArticleData,
-        photos: [...prevArticleData.photos, ...updatedPhotosWithData],
-      }));
-    });
-  };
-
-  const handlePhotoRemove = (index) => {
-    setArticleData((prevArticleData) => {
-      const updatedPhotos = [...prevArticleData.photos];
-      updatedPhotos.splice(index, 1);
-      return {
-        ...prevArticleData,
-        photos: updatedPhotos,
-      };
-    });
-  };
-
-
-  const removePhoto = (index) => {
-    setArticleData((prevArticleData) => {
-      const updatedPhotos = [...prevArticleData.photos];
-      updatedPhotos.splice(index, 1);
-      return {
-        ...prevArticleData,
-        photos: updatedPhotos,
-      };
-    });
-  };
   useEffect(() => {
     const fetchData = async () => {
       await getArticleData();
@@ -167,11 +109,29 @@ export const EditArticle = () => {
     fetchData();
   }, [intArticleId]);
 
+  const handlePhotoChange = (e) => {
+    const files = Array.from(e.target.files);
+    const selectedPhotos = files.map((file) => ({
+      file,
+      preview: URL.createObjectURL(file),
+    }));
 
-
+    setArticleData((prevArticleData) => ({
+      ...prevArticleData,
+      photos: [...prevArticleData.photos, ...selectedPhotos],
+    }));
+  };
+  const handleRemovePhoto = (index) => {
+    setArticleData((prevArticleData) => {
+      const updatedPhotos = prevArticleData.photos.filter((_, i) => i !== index);
+      const removedPhoto = prevArticleData.photos[index];
+      URL.revokeObjectURL(removedPhoto.preview);
+      return { ...prevArticleData, photos: updatedPhotos };
+    });
+  };
   return (
     <Fragment>
-      <SidebarComponent />
+      <NewsStaffSidebarComponents />
       <div className="lg:ml-[20rem] h-screen py-16 px-8 flex flex-col gap-10">
         <div className="flex justify-between">
           <Typography variant="h2">Edit Article</Typography>
@@ -191,45 +151,30 @@ export const EditArticle = () => {
             <Typography className="mb-5 text-xl font-semibold">Article Information</Typography>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-
-              <TextareaAutosize
-                style={{ border: '1px solid #ccc' }}
-                aria-label="Title"
+              <Input
+                label="Title"
+                type="text"
                 name="strTitle"
-                value={articleData.strTitle ? articleData.strTitle.substring(0, 12) : ''}
+                value={articleData.strTitle}
                 onChange={handleInputChange}
                 placeholder="Title"
-                rowsMin={3}
               />
-
-              <textarea
-                style={{ border: '1px solid #ccc' }}
+              <Input
                 label="Description"
+                type="text"
                 name="strDescription"
-                value={articleData.strDescription ? articleData.strDescription.substring(0, 12) : ''}
+                value={articleData.strDescription}
                 onChange={handleInputChange}
                 placeholder="Description"
               />
-
-
-              <textarea
-                style={{ border: '1px solid #ccc' }}
+              <Input
                 label="Writer"
+                type="text"
                 name="strWriter"
-                value={articleData.strWriter ? articleData.strWriter.substring(0, 12) : ''}
+                value={articleData.strWriter}
                 onChange={handleInputChange}
                 placeholder="Writer"
               />
-
-              <textarea
-                style={{ border: '1px solid #ccc' }}
-                label="Feedback"
-                name="strFeedback"
-                value={articleData.strFeedback ? articleData.strFeedback.substring(0, 12) : ''}
-                onChange={handleInputChange}
-                placeholder="Feedback"
-              />
-
               <div className="flex flex-col gap-1">
                 <label className="text-sm font-medium text-gray-700">Publication Date</label>
                 <DatePicker
@@ -240,7 +185,7 @@ export const EditArticle = () => {
               </div>
               <Select
                 label="Select a Category"
-                value={articleData.strCategory} // Update this line
+                value={articleData.strCategory}
                 onChange={(e) => handleInputChange({ target: { name: 'strCategory', value: e.target.value } })}
                 placeholder="Select a category"
               >
@@ -251,40 +196,50 @@ export const EditArticle = () => {
                 <Option value="Sports">Sports</Option>
                 <Option value="Developmental Communication">Developmental Communication</Option>
               </Select>
-              <Input
-                type="text"
-                label="Volume"
-                name="strVolume"
-                value={articleData.strVolume ? articleData.strVolume.substring(0, 12) : ''}
-                onChange={handleInputChange}
-                placeholder="Volume"
-              />
-              <InputLabel htmlFor="photos">Photos</InputLabel>
+              {articleData.photos.map((photo, index) => (
+                <div key={index} className="relative">
+                  <img
+                    src={photo} // Issue: The `photo` variable should be `photo.url`
+                    alt={`Photo ${index + 1}`}
+                    className="w-24 h-24 object-cover rounded mr-2 mb-2"
+                  />
+                  <button
+                    className="absolute top-0 right-0 p-1 bg-red-500 rounded-full text-white text-xs"
+                    onClick={() => handleRemovePhoto(index)}
+                  >
+                    X
+                  </button>
+                </div>
+              ))}
               <input
                 type="file"
                 id="photos"
+                label="Photos"
                 multiple
-                onChange={(event) => handlePhotoUpload(event.target.files)}
+                onChange={(event) => handlePhotoUpload(event)}
               />
 
               <div className="mt-4">
                 <Typography variant="h6">Selected Photos:</Typography>
                 <div className="flex flex-wrap mt-2">
-                  {articleData.photos.map((photo, index) => (
-                    <div key={index}>
-                      {photo.fileType === 'photo' ? (
-                        <img src={photo.dataUrl} alt={`Photo ${index + 1}`} />
-                      ) : (
-                        <video controls>
-                          <source src={photo.dataUrl} type={photo.file.type} />
-                          Your browser does not support the video tag.
-                        </video>
-                      )}
-                      <button onClick={() => handlePhotoRemove(index)}>Remove</button>
+                  {newArticle.photos.map((photo, index) => (
+                    <div key={index} className="relative">
+                      <img
+                        src={photo.preview}
+                        alt={`Photo ${index + 1}`}
+                        className="w-24 h-24 object-cover rounded mr-2 mb-2"
+                      />
+                      <button
+                        className="absolute top-0 right-0 p-1 bg-red-500 rounded-full text-white text-xs"
+                        onClick={() => handleRemovePhoto(index)}
+                      >
+                        X
+                      </button>
                     </div>
                   ))}
                 </div>
               </div>
+
               <Button type="submit" className="bg-green sm:w-[200px] w-full self-end">
                 Save Changes
               </Button>

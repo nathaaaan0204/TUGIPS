@@ -84,7 +84,14 @@ export const AddUsers = ({ onAddUser }) => {
               value={newUser.strRole}
               onChange={(value) => setNewUser({ ...newUser, strRole: value })}
             >
-              <Option value="Staff">Staff</Option>
+              <Option value="News Staff">News Staff</Option>
+              <Option value="Opinions Staff">Opinions Staff</Option>
+              <Option value="Literary Staff">Literary Staff</Option>
+              <Option value="Features Staff">Features Staff</Option>
+              <Option value="Sports Staff">Sports Staff</Option>
+              <Option value="Development Staff">Development Staff</Option>
+              <Option value="Student">Student</Option>
+              <Option value="EIC">EIC</Option>
               <Option value="Admin">Admin</Option>
             </Select>
             <Button onClick={handleAddUser} className="bg-green sm:w-[200px] w-full self-end">

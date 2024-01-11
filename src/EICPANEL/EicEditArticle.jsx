@@ -9,9 +9,9 @@ import { InputLabel, TextareaAutosize } from '@material-ui/core';
 import { Button, Input, Option, Select, Typography, Card, CardBody } from '@material-tailwind/react';
 
 // Local component import
-import { SidebarComponent } from '../Components/SidebarComponent';
+import { EicSidebarComponents } from '../Components/EicSidebarComponents';
 
-export const EditArticle = () => {
+export const EicEditArticle = () => {
   const { intArticleId } = useParams();
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -171,7 +171,7 @@ export const EditArticle = () => {
 
   return (
     <Fragment>
-      <SidebarComponent />
+      <EicSidebarComponents />
       <div className="lg:ml-[20rem] h-screen py-16 px-8 flex flex-col gap-10">
         <div className="flex justify-between">
           <Typography variant="h2">Edit Article</Typography>

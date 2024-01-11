@@ -7,7 +7,7 @@ import { Footer } from "../Components/Footer";
 
 export const Feature = () => {
   const [articles, setArticles] = useState([]);
-
+  const [searchQuery, setSearchQuery] = useState('');
   useEffect(() => {
     const fetchArticles = async () => {
       try {
@@ -38,6 +38,17 @@ export const Feature = () => {
       </Fragment>
     );
   }
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const filteredArticles = articles.filter((article) =>
+    article.strTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    article.strDescription.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    article.strWriter.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    article.strVolume.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    article.publicationDate.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <Fragment>
@@ -48,8 +59,15 @@ export const Feature = () => {
       <div className="flex items-center justify-center py-20 lg:px-8 px-4">
         <div className="max-w-[80rem]">
           <h2 className="text-2xl font-bold mb-4">ARTICLES</h2>
+          <input
+            type="text"
+            placeholder="Search articles..."
+            value={searchQuery}
+            onChange={handleSearchChange}
+            className="mb-4 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-200"
+          />
           <ul>
-            {articles.map((article) => (
+          {filteredArticles.map((article) => (
               <li key={article.intArticleId}>
                 <Link to={`/article/${article.intArticleId}`} className="h-full">
                   <Card className="mt-5 shadow-none hover:bg-light-green-100">

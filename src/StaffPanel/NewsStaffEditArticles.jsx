@@ -6,15 +6,22 @@ import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-datepicker';
 import { NewsStaffSidebarComponents } from '../Components/NewsStaffSidebarComponents';
 
-export const StaffEditArticles = () => {
+
+export const NewsStaffEditArticles = () => {
   const { intArticleId } = useParams();
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [previousPhotos, setPreviousPhotos] = useState([]);
+  const [newArticle, setNewArticle] = useState({
+    photos: [],
+  });
   const [articleData, setArticleData] = useState({
     strTitle: '',
     strCategory: '',
     strDescription: '',
     strWriter: '',
+    strFeedback: '',
+    strVolume: '',
     publicationDate: new Date(),
     photos: [],
   });
@@ -32,6 +39,8 @@ export const StaffEditArticles = () => {
           strCategory: article.strCategory,
           strDescription: article.strDescription,
           strWriter: article.strWriter,
+          strVolume: article.strVolume,
+          strFeedback: article.strFeedback,
           publicationDate: new Date(article.publicationDate),
           photos: article.photos.map((photo) => ({ url: photo })),
         }));
@@ -44,9 +53,7 @@ export const StaffEditArticles = () => {
       setSuccessMessage('');
     }
   };
-  const [newArticle, setNewArticle] = useState({
-    photos: [],
-  });
+
   const handleDateChange = (date) => {
     setArticleData((prevArticleData) => ({
       ...prevArticleData,
@@ -67,24 +74,32 @@ export const StaffEditArticles = () => {
     const files = event.target.files;
     const uploadedPhotos = Array.from(files);
 
-    const uploadedPhotosWithData = uploadedPhotos.map((file) => ({
-      file: file,
-      preview: URL.createObjectURL(file), // Generate the preview URL for the photo
-    }));
+    const uploadedPhotosWithData = uploadedPhotos.map((file) => {
+      const fileType = file.type.split('/')[0]; // Get the file type (e.g., image, video)
+      const preview = URL.createObjectURL(file); // Generate the preview URL for the file
 
-    setNewArticle((prevArticle) => ({
-      ...prevArticle,
-      photos: prevArticle.photos.concat(uploadedPhotosWithData),
+      return {
+        file: file,
+        preview: preview,
+        type: fileType,
+      };
+    });
+
+    setNewArticle((prevNewArticle) => ({
+      ...prevNewArticle,
+      photos: uploadedPhotosWithData,
     }));
   };
-
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     const formattedArticleData = {
       ...articleData,
+      photos: articleData.photos.map((photo) => photo.url),
     };
+
+    console.log(formattedArticleData);
 
     axios
       .put(`https://localhost:44392/api/Article/EditArticle/${intArticleId}`, formattedArticleData)
@@ -95,11 +110,25 @@ export const StaffEditArticles = () => {
         setTimeout(() => {
           setSuccessMessage('');
         }, 3000);
+        setArticleData({
+          strTitle: '',
+          strCategory: '',
+          strDescription: '',
+          strWriter: '',
+          strVolume: '',
+          strFeedback: '',
+          publicationDate: new Date(),
+          photos: [],
+        });
+        setNewArticle({
+          photos: [],
+        });
       })
       .catch((error) => {
         console.error('Error updating user data:', error);
       });
   };
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -109,18 +138,7 @@ export const StaffEditArticles = () => {
     fetchData();
   }, [intArticleId]);
 
-  const handlePhotoChange = (e) => {
-    const files = Array.from(e.target.files);
-    const selectedPhotos = files.map((file) => ({
-      file,
-      preview: URL.createObjectURL(file),
-    }));
 
-    setArticleData((prevArticleData) => ({
-      ...prevArticleData,
-      photos: [...prevArticleData.photos, ...selectedPhotos],
-    }));
-  };
   const handleRemovePhoto = (index) => {
     setArticleData((prevArticleData) => {
       const updatedPhotos = prevArticleData.photos.filter((_, i) => i !== index);
@@ -128,7 +146,15 @@ export const StaffEditArticles = () => {
       URL.revokeObjectURL(removedPhoto.preview);
       return { ...prevArticleData, photos: updatedPhotos };
     });
+
+    setNewArticle((prevNewArticle) => {
+      const updatedPhotos = prevNewArticle.photos.filter((_, i) => i !== index);
+      const removedPhoto = prevNewArticle.photos[index];
+      URL.revokeObjectURL(removedPhoto.preview);
+      return { ...prevNewArticle, photos: updatedPhotos };
+    });
   };
+
   return (
     <Fragment>
       <NewsStaffSidebarComponents />
@@ -151,21 +177,21 @@ export const StaffEditArticles = () => {
             <Typography className="mb-5 text-xl font-semibold">Article Information</Typography>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-              <Input
-                label="Title"
-                type="text"
-                name="strTitle"
-                value={articleData.strTitle}
-                onChange={handleInputChange}
-                placeholder="Title"
-              />
-              <Input
+            <textarea
+              label="Title"
+              name="strTitle"
+              value={articleData.strTitle}
+              onChange={handleInputChange}
+              placeholder="Title"
+              className="px-3 py-2 rounded-lg border border-gray-300 text-gray-700 focus:outline-none focus:border-indigo-500"
+            />
+              <textarea
                 label="Description"
-                type="text"
                 name="strDescription"
                 value={articleData.strDescription}
                 onChange={handleInputChange}
                 placeholder="Description"
+                className="px-3 py-2 rounded-lg border border-gray-300 text-gray-700 focus:outline-none focus:border-indigo-500"
               />
               <Input
                 label="Writer"
@@ -196,13 +222,39 @@ export const StaffEditArticles = () => {
                 <Option value="Sports">Sports</Option>
                 <Option value="Developmental Communication">Developmental Communication</Option>
               </Select>
+              <Input
+                label="Volume"
+                type="text"
+                name="strVolume"
+                value={articleData.strVolume}
+                onChange={handleInputChange}
+                placeholder="Volume"
+              />
+              <Input
+                label="Feedback"
+                type="text"
+                name="strFeedback"
+                value={articleData.strFeedback}
+                onChange={handleInputChange}
+                placeholder="Feedback"
+              />
+              <div class="flex flex-wrap mt-500"></div>
               {articleData.photos.map((photo, index) => (
                 <div key={index} className="relative">
-                  <img
-                    src={photo} // Issue: The `photo` variable should be `photo.url`
-                    alt={`Photo ${index + 1}`}
-                    className="w-24 h-24 object-cover rounded mr-2 mb-2"
-                  />
+                  {photo.type === 'image' ? (
+                    <img
+                      src={photo.url}
+                      alt={`Photo ${index + 1}`}
+                      className="w-500 h-500 object-cover rounded mr-2 mb-2"
+                    />
+                  ) : photo.type === 'video' ? (
+                    <video
+                      src={photo.url}
+                      alt={`Video ${index + 1}`}
+                      className="w-500 h-500 object-cover rounded mr-2 mb-2"
+                      controls
+                    />
+                  ) : null}
                   <button
                     className="absolute top-0 right-0 p-1 bg-red-500 rounded-full text-white text-xs"
                     onClick={() => handleRemovePhoto(index)}
@@ -211,6 +263,7 @@ export const StaffEditArticles = () => {
                   </button>
                 </div>
               ))}
+              <div className="flex flex-wrap mt-2"></div>
               <input
                 type="file"
                 id="photos"
@@ -218,17 +271,29 @@ export const StaffEditArticles = () => {
                 multiple
                 onChange={(event) => handlePhotoUpload(event)}
               />
-
               <div className="mt-4">
                 <Typography variant="h6">Selected Photos:</Typography>
+
                 <div className="flex flex-wrap mt-2">
+
+                  {/* Display newArticle */}
                   {newArticle.photos.map((photo, index) => (
                     <div key={index} className="relative">
-                      <img
-                        src={photo.preview}
-                        alt={`Photo ${index + 1}`}
-                        className="w-24 h-24 object-cover rounded mr-2 mb-2"
-                      />
+                      {photo.type === 'image' ? (
+                        <img
+                          src={photo.preview}
+                          alt={`New Photo ${index + 1}`}
+                          className="w-500 h-500 object-cover rounded mr-2 mb-2"
+                        />
+                      ) : photo.type === 'video' ? (
+                        <video
+                          src={photo.url}
+                          alt={`Video ${index + 1}`}
+                          className="w-500 h-500 object-cover rounded mr-2 mb-2"
+                          controls
+                        />
+                      ) : null}
+                      {/* ... */}
                       <button
                         className="absolute top-0 right-0 p-1 bg-red-500 rounded-full text-white text-xs"
                         onClick={() => handleRemovePhoto(index)}
@@ -239,6 +304,8 @@ export const StaffEditArticles = () => {
                   ))}
                 </div>
               </div>
+
+
 
               <Button type="submit" className="bg-green sm:w-[200px] w-full self-end">
                 Save Changes

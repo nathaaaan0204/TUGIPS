@@ -39,6 +39,12 @@ export const NavigationBar = () => {
         </Link>
           <div className="flex items-center gap-4">
             <div className="mr-4 hidden lg:block">{navList}</div>
+            <Link to="/Recruitment" className="hidden lg:block">
+            <Button className="border-green border bg-transparent text-green">
+            Hiring
+            </Button>
+           
+        </Link>
             <Link to="/Login" className="hidden lg:block">
             <Button className="bg-green">
             Login
@@ -90,6 +96,11 @@ export const NavigationBar = () => {
           <Link to="/Login">
             <Button className="bg-green">
             Login
+            </Button>
+        </Link>
+        <Link to="/Recruitment" className="hidden lg:block">
+            <Button className="border-green border bg-transparent text-green">
+            Hiring
             </Button>
            
         </Link>

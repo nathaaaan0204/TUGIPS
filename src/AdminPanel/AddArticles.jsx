@@ -131,9 +131,7 @@ export const AddArticles = () => {
               <Option value="Opinion">Opinion</Option>
               <Option value="Literary">Literary</Option>
               <Option value="Sports">Sports</Option>
-              <Option value="Developmental Communication">
-                Developmental Communication
-              </Option>
+              <Option value="Developmental Communication">Developmental Communication</Option>
             </Select>
 
             <textarea

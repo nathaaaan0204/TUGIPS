@@ -1,29 +1,29 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { useParams } from 'react-router-dom';
+import { Button, Input, Option, Select, Typography, Card, CardBody } from '@material-tailwind/react';
 import axios from 'axios';
 import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-datepicker';
-import { InputLabel, TextareaAutosize } from '@material-ui/core';
-
-// Material-UI imports
-import { Button, Input, Option, Select, Typography, Card, CardBody } from '@material-tailwind/react';
-
-// Local component import
 import { EicSidebarComponents } from '../Components/EicSidebarComponents';
+
 
 export const EicEditArticle = () => {
   const { intArticleId } = useParams();
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [previousPhotos, setPreviousPhotos] = useState([]);
+  const [newArticle, setNewArticle] = useState({
+    photos: [],
+  });
   const [articleData, setArticleData] = useState({
     strTitle: '',
     strCategory: '',
     strDescription: '',
     strWriter: '',
     strFeedback: '',
+    strVolume: '',
     publicationDate: new Date(),
     photos: [],
-    strVolume: '',
   });
 
   const getArticleData = async () => {
@@ -39,10 +39,10 @@ export const EicEditArticle = () => {
           strCategory: article.strCategory,
           strDescription: article.strDescription,
           strWriter: article.strWriter,
+          strVolume: article.strVolume,
           strFeedback: article.strFeedback,
           publicationDate: new Date(article.publicationDate),
           photos: article.photos.map((photo) => ({ url: photo })),
-          strVolume: article.strVolume, // Add strVolume
         }));
       } else {
         setErrorMessage('No article data found');
@@ -53,9 +53,7 @@ export const EicEditArticle = () => {
       setSuccessMessage('');
     }
   };
-  const [newArticle, setNewArticle] = useState({
-    photos: [],
-  });
+
   const handleDateChange = (date) => {
     setArticleData((prevArticleData) => ({
       ...prevArticleData,
@@ -66,30 +64,42 @@ export const EicEditArticle = () => {
   const handleInputChange = (event) => {
     const { name, value } = event.target;
 
-    if (event.key === 'Enter' && name === 'strDescription') {
-      event.preventDefault();
-      setArticleData((prevArticleData) => ({
-        ...prevArticleData,
-        [name]: `${value}\n`,
-      }));
-    } else if (name === 'strFeedback') { // Handle strFeedback separately
-      setArticleData((prevArticleData) => ({
-        ...prevArticleData,
-        strFeedback: value,
-      }));
-    } else {
-      setArticleData((prevArticleData) => ({
-        ...prevArticleData,
-        [name]: value,
-      }));
-    }
+    setArticleData((prevArticleData) => ({
+      ...prevArticleData,
+      [name]: value,
+    }));
   };
+
+  const handlePhotoUpload = (event) => {
+    const files = event.target.files;
+    const uploadedPhotos = Array.from(files);
+
+    const uploadedPhotosWithData = uploadedPhotos.map((file) => {
+      const fileType = file.type.split('/')[0]; // Get the file type (e.g., image, video)
+      const preview = URL.createObjectURL(file); // Generate the preview URL for the file
+
+      return {
+        file: file,
+        preview: preview,
+        type: fileType,
+      };
+    });
+
+    setNewArticle((prevNewArticle) => ({
+      ...prevNewArticle,
+      photos: uploadedPhotosWithData,
+    }));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
     const formattedArticleData = {
       ...articleData,
+      photos: articleData.photos.map((photo) => photo.url),
     };
+
+    console.log(formattedArticleData);
 
     axios
       .put(`https://localhost:44392/api/Article/EditArticle/${intArticleId}`, formattedArticleData)
@@ -100,65 +110,26 @@ export const EicEditArticle = () => {
         setTimeout(() => {
           setSuccessMessage('');
         }, 3000);
+        setArticleData({
+          strTitle: '',
+          strCategory: '',
+          strDescription: '',
+          strWriter: '',
+          strVolume: '',
+          strFeedback: '',
+          publicationDate: new Date(),
+          photos: [],
+        });
+        setNewArticle({
+          photos: [],
+        });
       })
       .catch((error) => {
         console.error('Error updating user data:', error);
       });
   };
 
-  const handlePhotoUpload = (files) => {
-    const updatedPhotosWithData = [];
-    const filePromises = [];
 
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      const fileReader = new FileReader();
-
-      filePromises.push(
-        new Promise((resolve) => {
-          fileReader.onload = (event) => {
-            const dataUrl = event.target.result;
-            const fileType = file.type.startsWith('image') ? 'photo' : 'video';
-
-            updatedPhotosWithData.push({ file, dataUrl, fileType });
-            resolve();
-          };
-
-          fileReader.readAsDataURL(file);
-        })
-      );
-    }
-
-    Promise.all(filePromises).then(() => {
-      setArticleData((prevArticleData) => ({
-        ...prevArticleData,
-        photos: [...prevArticleData.photos, ...updatedPhotosWithData],
-      }));
-    });
-  };
-
-  const handlePhotoRemove = (index) => {
-    setArticleData((prevArticleData) => {
-      const updatedPhotos = [...prevArticleData.photos];
-      updatedPhotos.splice(index, 1);
-      return {
-        ...prevArticleData,
-        photos: updatedPhotos,
-      };
-    });
-  };
-
-
-  const removePhoto = (index) => {
-    setArticleData((prevArticleData) => {
-      const updatedPhotos = [...prevArticleData.photos];
-      updatedPhotos.splice(index, 1);
-      return {
-        ...prevArticleData,
-        photos: updatedPhotos,
-      };
-    });
-  };
   useEffect(() => {
     const fetchData = async () => {
       await getArticleData();
@@ -168,6 +139,21 @@ export const EicEditArticle = () => {
   }, [intArticleId]);
 
 
+  const handleRemovePhoto = (index) => {
+    setArticleData((prevArticleData) => {
+      const updatedPhotos = prevArticleData.photos.filter((_, i) => i !== index);
+      const removedPhoto = prevArticleData.photos[index];
+      URL.revokeObjectURL(removedPhoto.preview);
+      return { ...prevArticleData, photos: updatedPhotos };
+    });
+
+    setNewArticle((prevNewArticle) => {
+      const updatedPhotos = prevNewArticle.photos.filter((_, i) => i !== index);
+      const removedPhoto = prevNewArticle.photos[index];
+      URL.revokeObjectURL(removedPhoto.preview);
+      return { ...prevNewArticle, photos: updatedPhotos };
+    });
+  };
 
   return (
     <Fragment>
@@ -191,45 +177,30 @@ export const EicEditArticle = () => {
             <Typography className="mb-5 text-xl font-semibold">Article Information</Typography>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-
-              <TextareaAutosize
-                style={{ border: '1px solid #ccc' }}
-                aria-label="Title"
-                name="strTitle"
-                value={articleData.strTitle ? articleData.strTitle.substring(0, 12) : ''}
-                onChange={handleInputChange}
-                placeholder="Title"
-                rowsMin={3}
-              />
-
+            <textarea
+              label="Title"
+              name="strTitle"
+              value={articleData.strTitle}
+              onChange={handleInputChange}
+              placeholder="Title"
+              className="px-3 py-2 rounded-lg border border-gray-300 text-gray-700 focus:outline-none focus:border-indigo-500"
+            />
               <textarea
-                style={{ border: '1px solid #ccc' }}
                 label="Description"
                 name="strDescription"
-                value={articleData.strDescription ? articleData.strDescription.substring(0, 12) : ''}
+                value={articleData.strDescription}
                 onChange={handleInputChange}
                 placeholder="Description"
+                className="px-3 py-2 rounded-lg border border-gray-300 text-gray-700 focus:outline-none focus:border-indigo-500"
               />
-
-
-              <textarea
-                style={{ border: '1px solid #ccc' }}
+              <Input
                 label="Writer"
+                type="text"
                 name="strWriter"
-                value={articleData.strWriter ? articleData.strWriter.substring(0, 12) : ''}
+                value={articleData.strWriter}
                 onChange={handleInputChange}
                 placeholder="Writer"
               />
-
-              <textarea
-                style={{ border: '1px solid #ccc' }}
-                label="Feedback"
-                name="strFeedback"
-                value={articleData.strFeedback ? articleData.strFeedback.substring(0, 12) : ''}
-                onChange={handleInputChange}
-                placeholder="Feedback"
-              />
-
               <div className="flex flex-col gap-1">
                 <label className="text-sm font-medium text-gray-700">Publication Date</label>
                 <DatePicker
@@ -240,7 +211,7 @@ export const EicEditArticle = () => {
               </div>
               <Select
                 label="Select a Category"
-                value={articleData.strCategory} // Update this line
+                value={articleData.strCategory}
                 onChange={(e) => handleInputChange({ target: { name: 'strCategory', value: e.target.value } })}
                 placeholder="Select a category"
               >
@@ -252,39 +223,90 @@ export const EicEditArticle = () => {
                 <Option value="Developmental Communication">Developmental Communication</Option>
               </Select>
               <Input
-                type="text"
                 label="Volume"
+                type="text"
                 name="strVolume"
-                value={articleData.strVolume ? articleData.strVolume.substring(0, 12) : ''}
+                value={articleData.strVolume}
                 onChange={handleInputChange}
                 placeholder="Volume"
               />
-              <InputLabel htmlFor="photos">Photos</InputLabel>
+              <Input
+                label="Feedback"
+                type="text"
+                name="strFeedback"
+                value={articleData.strFeedback}
+                onChange={handleInputChange}
+                placeholder="Feedback"
+              />
+              <div class="flex flex-wrap mt-500"></div>
+              {articleData.photos.map((photo, index) => (
+                <div key={index} className="relative">
+                  {photo.type === 'image' ? (
+                    <img
+                      src={photo.url}
+                      alt={`Photo ${index + 1}`}
+                      className="w-500 h-500 object-cover rounded mr-2 mb-2"
+                    />
+                  ) : photo.type === 'video' ? (
+                    <video
+                      src={photo.url}
+                      alt={`Video ${index + 1}`}
+                      className="w-500 h-500 object-cover rounded mr-2 mb-2"
+                      controls
+                    />
+                  ) : null}
+                  <button
+                    className="absolute top-0 right-0 p-1 bg-red-500 rounded-full text-white text-xs"
+                    onClick={() => handleRemovePhoto(index)}
+                  >
+                    X
+                  </button>
+                </div>
+              ))}
+              <div className="flex flex-wrap mt-2"></div>
               <input
                 type="file"
                 id="photos"
+                label="Photos"
                 multiple
-                onChange={(event) => handlePhotoUpload(event.target.files)}
+                onChange={(event) => handlePhotoUpload(event)}
               />
-
               <div className="mt-4">
                 <Typography variant="h6">Selected Photos:</Typography>
+
                 <div className="flex flex-wrap mt-2">
-                  {articleData.photos.map((photo, index) => (
-                    <div key={index}>
-                      {photo.fileType === 'photo' ? (
-                        <img src={photo.dataUrl} alt={`Photo ${index + 1}`} />
-                      ) : (
-                        <video controls>
-                          <source src={photo.dataUrl} type={photo.file.type} />
-                          Your browser does not support the video tag.
-                        </video>
-                      )}
-                      <button onClick={() => handlePhotoRemove(index)}>Remove</button>
+
+                  {/* Display newArticle */}
+                  {newArticle.photos.map((photo, index) => (
+                    <div key={index} className="relative">
+                      {photo.type === 'image' ? (
+                        <img
+                          src={photo.preview}
+                          alt={`New Photo ${index + 1}`}
+                          className="w-500 h-500 object-cover rounded mr-2 mb-2"
+                        />
+                      ) : photo.type === 'video' ? (
+                        <video
+                          src={photo.url}
+                          alt={`Video ${index + 1}`}
+                          className="w-500 h-500 object-cover rounded mr-2 mb-2"
+                          controls
+                        />
+                      ) : null}
+                      {/* ... */}
+                      <button
+                        className="absolute top-0 right-0 p-1 bg-red-500 rounded-full text-white text-xs"
+                        onClick={() => handleRemovePhoto(index)}
+                      >
+                        X
+                      </button>
                     </div>
                   ))}
                 </div>
               </div>
+
+
+
               <Button type="submit" className="bg-green sm:w-[200px] w-full self-end">
                 Save Changes
               </Button>

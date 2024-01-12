@@ -4,10 +4,10 @@ import { Button, Input, Option, Select, Typography, Card, CardBody } from '@mate
 import axios from 'axios';
 import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-datepicker';
-import { SidebarComponent } from '../Components/SidebarComponent';
+import { OpinionsStaffSidebarComponents } from '../Components/OpinionsStaffSidebarComponents';
 
 
-export const EditArticle = () => {
+export const OpinionsStaffEditArticles = () => {
   const { intArticleId } = useParams();
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -157,7 +157,7 @@ export const EditArticle = () => {
 
   return (
     <Fragment>
-      <SidebarComponent />
+      <OpinionsStaffSidebarComponents />
       <div className="lg:ml-[20rem] h-screen py-16 px-8 flex flex-col gap-10">
         <div className="flex justify-between">
           <Typography variant="h2">Edit Article</Typography>
@@ -177,8 +177,7 @@ export const EditArticle = () => {
             <Typography className="mb-5 text-xl font-semibold">Article Information</Typography>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-             
-              <textarea
+            <textarea
               label="Title"
               name="strTitle"
               value={articleData.strTitle}

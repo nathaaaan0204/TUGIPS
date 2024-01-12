@@ -9,7 +9,7 @@ import {
 } from "@material-tailwind/react";
 
 import { Link, useNavigate } from "react-router-dom";
-import { NewsStaffSidebarComponents } from "../Components/NewsStaffSidebarComponents";
+import { SportsStaffSidebarComponents } from "../Components/SportsStaffSidebarComponents";
 
 const TABLE_HEAD = [
   "ID",
@@ -25,7 +25,7 @@ const TABLE_HEAD = [
 ];
 const ITEMS_PER_PAGE = 10;
 
-export const NewsStaffViewArticles = () => {
+export const SportsStaffEditArticles = () => {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
@@ -72,12 +72,12 @@ export const NewsStaffViewArticles = () => {
     setCurrentPage(1); // Reset to the first page when searching
   };
   const handleArticleEdit = (articleId) => {
-    navigate(`/NewsStaffEditArticles/${articleId}`);
+    navigate(`/SportsStaffEditArticles/${articleId}`);
   };
 
   return (
     <Fragment>
-      <NewsStaffSidebarComponents />
+      <SportsStaffSidebarComponents />
       <div className="lg:ml-[20rem] h-screen py-16 px-8 flex flex-col gap-10">
         <div className="">
           <div className="flex sm:justify-between gap-5 flex-wrap justify-center">
@@ -277,4 +277,4 @@ export const NewsStaffViewArticles = () => {
   );
 };
 
-export default NewsStaffViewArticles;
+export default SportsStaffEditArticles;

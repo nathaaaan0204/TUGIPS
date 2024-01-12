@@ -33,7 +33,6 @@
   import { DevelopmentsStaffViewArticles } from "./StaffPanel/DevelopmentsStaffViewArticles";
   import { FeaturesStaffViewArticles } from "./StaffPanel/FeaturesStaffViewArticles";
   import { StudentViewArticles } from "./StaffPanel/StudentViewArticles";
-  import { StaffEditArticles } from "./StaffPanel/StaffEditArticles";
   import { EicDashboard } from "./EICPANEL/EicDashboard";
   import { EicViewArticle } from "./EICPANEL/EicViewArticle";
   import { EicEditArticle } from "./EICPANEL/EicEditArticle";
@@ -44,7 +43,13 @@
   import { SportsStaffAddArticles } from "./StaffPanel/SportsStaffAddArticles";
   import { DevelopmentsStaffAddArticles } from "./StaffPanel/DevelopmentsStaffAddArticles";
   import { StudentAddArticles } from "./StaffPanel/StudentAddArticles";
-  
+  import { RecruitmentPage } from "./LandingPage/RecruitmentPage";
+  import { NewsStaffEditArticles } from "./StaffPanel/NewsStaffEditArticles";
+  import { FeaturesStaffEditArticles } from "./StaffPanel/FeaturesStaffEditArticles";
+  import { OpinionsStaffEditArticles } from "./StaffPanel/OpinionsStaffEditArticles";
+  import { SportsStaffEditArticles } from "./StaffPanel/SportsStaffEditArticles";
+  import { LiteraryStaffEditArticles } from "./StaffPanel/LiteraryStaffEditArticles";
+  import { DevelopmentsStaffEditArticles } from "./StaffPanel/DevelopmentsStaffEditArticles";
   
   
 
@@ -78,7 +83,6 @@
         <Route path="/EditUser/:intRegistrationId" element={<EditUser/>} />
         <Route path="/ViewArticles" element={<ViewArticles />} />
         <Route path="/AddArticles" element={<AddArticles />} />
-      
         <Route path="/EditArticle/:intArticleId" element={<EditArticle/>} />
         <Route path="/NewsStaffViewArticles" element={<NewsStaffViewArticles/>} />
         <Route path="/OpinionsStaffViewArticles" element={<OpinionsStaffViewArticles/>} />
@@ -87,7 +91,12 @@
         <Route path="/LiteraryStaffViewArticles" element={<LiteraryStaffViewArticles/>} />
         <Route path="/SportsStaffViewArticles" element={<SportsStaffViewArticles/>} />
         <Route path="/StudentViewArticles" element={<StudentViewArticles/>} />
-        <Route path="/StaffEditArticles/:intArticleId" element={<StaffEditArticles/>} />
+        <Route path="/NewsStaffEditArticles/:intArticleId" element={<NewsStaffEditArticles/>} />
+        <Route path="/OpinionsStaffEditArticles/:intArticleId" element={<OpinionsStaffEditArticles/>} />
+        <Route path="/SportsStaffEditArticles/:intArticleId" element={<SportsStaffEditArticles/>} />
+        <Route path="/FeaturesStaffEditArticles/:intArticleId" element={<FeaturesStaffEditArticles/>} />
+        <Route path="/DevelopmentsStaffEditArticles/:intArticleId" element={<DevelopmentsStaffEditArticles/>} />
+        <Route path="/LiteraryStaffEditArticles/:intArticleId" element={<LiteraryStaffEditArticles/>} />
         <Route path="/EicDashboard" element={<EicDashboard />} />
         <Route path="/EicViewArticle" element={<EicViewArticle/>} />
         <Route path="/EicEditArticle/:intArticleId" element={<EicEditArticle/>} />
@@ -98,7 +107,7 @@
         <Route path="/SportsStaffAddArticles" element={<SportsStaffAddArticles/>} />
         <Route path="/DevelopmentsStaffAddArticles" element={<DevelopmentsStaffAddArticles/>} />
         <Route path="/StudentAddArticles" element={<StudentAddArticles/>} />
-        
+        <Route path="/Recruitment" element={<RecruitmentPage />} />
         
 
 

@@ -4,6 +4,7 @@ import { NavigationBar } from '../Components/NavigationBar';
 import { HeroSection } from './HeroSection';
 import { RecentArticles } from './RecentArticles';
 import { Footer } from '../Components/Footer';
+import { RecruitmentBanner } from './RecruitmentBanner';
 const recentArticles = [
     { id: 1, title: 'Article 1' },
     { id: 2, title: 'Article 2' },
@@ -16,6 +17,7 @@ export const HomePage = () => {
         <NavigationBar/>
         <HeroSection/>
         <RecentArticles articles={recentArticles} />
+        <RecruitmentBanner/>
         <Footer/>
    </Fragment>
      

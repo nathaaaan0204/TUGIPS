@@ -126,7 +126,7 @@ export const FeaturesStaffAddArticles = () => {
               value={newArticle.strCategory}
               onChange={(value) => setNewArticle({ ...newArticle, strCategory: value })}
             >
-              
+              <Option value="Feature"></Option>
               <Option value="Feature">Feature</Option>
               
             </Select>

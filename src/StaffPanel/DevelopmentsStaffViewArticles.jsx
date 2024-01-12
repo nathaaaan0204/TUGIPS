@@ -42,10 +42,10 @@ export const DevelopmentsStaffViewArticles = () => {
           "https://localhost:44392/api/Article/GetArticles"
         );
         const allArticles = response.data.listArticle;
-        const newsArticles = allArticles.filter(
+        const DevelopmentalCommunnicationArticles = allArticles.filter(
           (article) => article.strCategory === "Developmental Communication"
         );
-        setArticles(newsArticles);
+        setArticles(DevelopmentalCommunnicationArticles);
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching articles:", error);
@@ -74,7 +74,7 @@ export const DevelopmentsStaffViewArticles = () => {
   const handleArticleApproval = async (articleId) => {
     try {
       const response = await axios.post(
-        "https://localhost:44392/api/Article/ArticleApproval",
+        "https://localhost:44392/api/Article/ArticleSubmit",
         {
           intArticleId: articleId,
         }
@@ -90,8 +90,7 @@ export const DevelopmentsStaffViewArticles = () => {
         // Update the status of the approved user in the users array
         if (articleIndex !== -1) {
           const updatedArticles = [...articles];
-
-          updatedArticles[articleIndex].isApproved = 1;
+          updatedArticles[articleIndex].isApproved = 3;
           setArticles(updatedArticles);
         }
       } else {
@@ -279,9 +278,9 @@ export const DevelopmentsStaffViewArticles = () => {
                               block={false}
                               iconOnly={false}
                               ripple="light"
-                              disabled={isApproved === 1} // Disable the button if already approved
+                              disabled={isApproved === 3} // Disable the button if already approved
                             >
-                              Publish
+                              Submitted
                             </Button>
                             <Button
                               onClick={() => handleArticleDecline(intArticleId)}

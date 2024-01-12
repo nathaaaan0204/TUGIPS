@@ -83,6 +83,12 @@ export const ArticleDetail = () => {
             {article.listArticle[0].strWriter}
           </span>
         </Typography>
+        <Typography className="text-black">
+          Volume:{" "}
+          <span className="font-medium">
+            {article.listArticle[0].strVolume}
+          </span>
+        </Typography>
       </div>
       <Footer />
     </Fragment>

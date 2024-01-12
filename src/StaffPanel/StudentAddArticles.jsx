@@ -46,7 +46,7 @@ export const StudentAddArticles = () => {
 
 
     axios
-      .post('https://localhost:44392/api/Article/AddArticle', formData, {
+      .post('https://localhost:44392/api/Article/StudentAddArticle', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

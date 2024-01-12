@@ -10,7 +10,7 @@ export const NewsStaffDashboard = () => {
       <NewsStaffSidebarComponents />
       <div className="lg:ml-[20rem] h-screen py-16 px-8 flex flex-col gap-10">
         <Typography className="text-4xl text-green text-center lg:text-left font-semibold">
-          Welcome to the TUGIPS Dashboard
+          Welcome to the TUGIPS News Staff Dashboard
         </Typography>
         <img
           src="https://img.freepik.com/free-photo/person-writing-office_53876-94944.jpg?w=1380&t=st=1699779375~exp=1699779975~hmac=0eeca260a819faaab1afcba99ddb4e98e07111810ceaad54d212847c07751aaa"

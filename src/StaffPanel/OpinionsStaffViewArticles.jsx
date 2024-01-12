@@ -42,10 +42,10 @@ export const OpinionsStaffViewArticles = () => {
           "https://localhost:44392/api/Article/GetArticles"
         );
         const allArticles = response.data.listArticle;
-        const newsArticles = allArticles.filter(
+        const OpinionArticles = allArticles.filter(
           (article) => article.strCategory === "Opinion"
         );
-        setArticles(newsArticles);
+        setArticles(OpinionArticles);
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching articles:", error);
@@ -70,6 +70,59 @@ export const OpinionsStaffViewArticles = () => {
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
     setCurrentPage(1); // Reset to the first page when searching
+  };
+  const handleArticleApproval = async (articleId) => {
+    try {
+      const response = await axios.post(
+        "https://localhost:44392/api/Article/ArticleSubmit",
+        {
+          intArticleId: articleId,
+        }
+      );
+
+      // Handle the response as needed after approving the article
+      if (response.status === 200) {
+        console.log("Article Approved");
+
+        // Find the index of the approved user in the users array
+        const articleIndex = articles.findIndex(article => article.intArticleId === articleId);
+
+        // Update the status of the approved user in the users array
+        if (articleIndex !== -1) {
+          const updatedArticles = [...articles];
+          updatedArticles[articleIndex].isApproved = 3;
+          setArticles(updatedArticles);
+        }
+      } else {
+        console.log("Article Approval Failed");
+      }
+    } catch (error) {
+      console.error("Error approving article:", error);
+    }
+  };
+
+  const handleArticleDecline = async (articleId) => {
+    try {
+      const response = await axios.post(
+        "https://localhost:44392/api/Article/DeclineArticle",
+        { intArticleId: articleId }
+      );
+  
+      // Handle the response as needed after declining the article
+      console.log(response.data);
+  
+      // Find the index of the declined user in the articles array
+      const articleIndex = articles.findIndex((article) => article.intArticleId === articleId);
+  
+      // Update the status of the declined article in the users array
+      if (articleIndex !== -1) {
+        const updatedArticles = [...articles];
+        updatedArticles[articleIndex].isApproved = 2;
+        setArticles(updatedArticles);
+      }
+    } catch (error) {
+      console.error("Error declining article:", error);
+    }
   };
   const handleArticleEdit = (articleId) => {
     navigate(`/StaffEditArticles/${articleId}`);
@@ -216,7 +269,32 @@ export const OpinionsStaffViewArticles = () => {
                             )}
                           </td>
                           <td className="p-4 flex gap-4">
-                            
+                          <Button
+                              onClick={() => handleArticleApproval(intArticleId)}
+                              color="blue"
+                              buttonType="filled"
+                              size="small"
+                              rounded={false}
+                              block={false}
+                              iconOnly={false}
+                              ripple="light"
+                              disabled={isApproved === 3} // Disable the button if already approved
+                            >
+                              Submitted
+                            </Button>
+                            <Button
+                              onClick={() => handleArticleDecline(intArticleId)}
+                              color="red"
+                              buttonType="filled"
+                              size="small"
+                              rounded={false}
+                              block={false}
+                              iconOnly={false}
+                              ripple="light"
+                              disabled={isApproved === 1 || isApproved === 2}  // Disable the button if already approved
+                            >
+                              Decline
+                            </Button>
                             <Button
                               onClick={() => handleArticleEdit(intArticleId)}
                               color="orange"

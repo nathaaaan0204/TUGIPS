@@ -99,12 +99,15 @@ export const RecentArticles = () => {
                       </Typography>
                       <Typography color="black">
                         {article.strDescription.length > 200
-                          ? `${article.strDescription.substring(0, 200)}...`
+                          ? `${article.strDescription.substring(0, 50)}...`
                           : article.strDescription}
                       </Typography>
                       <Typography className="font-medium text-light-gray">
                         {article.strWriter}
                       </Typography>
+                      <Typography className="font-medium text-light-gray">
+                          {article.strVolume}
+                        </Typography>
                       <Typography className="font-medium text-light-gray">
                         Publication Date: {article.publicationDate}
                       </Typography>

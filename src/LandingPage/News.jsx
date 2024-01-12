@@ -47,7 +47,8 @@ export const News = () => {
     article.strDescription.toLowerCase().includes(searchQuery.toLowerCase()) ||
     article.strWriter.toLowerCase().includes(searchQuery.toLowerCase()) ||
     article.strVolume.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    article.publicationDate.toLowerCase().includes(searchQuery.toLowerCase())
+    article.publicationDate.toLowerCase().includes(searchQuery.toLowerCase())||
+    article.strVolume.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
 
@@ -108,11 +109,14 @@ export const News = () => {
                         </Typography>
                         <Typography color="black">
                           {article.strDescription.length > 50
-                            ? `${article.strDescription.substring(0, 200)}...`
+                            ? `${article.strDescription.substring(0, 100)}...`
                             : article.strDescription}
                         </Typography>
                         <Typography className="font-medium text-light-gray">
                           {article.strWriter}
+                        </Typography>
+                        <Typography className="font-medium text-light-gray">
+                          {article.strVolume}
                         </Typography>
                       </div>
                     </CardBody>

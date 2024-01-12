@@ -254,7 +254,9 @@ export const EicViewArticle = () => {
                               <span className="text-green-500">Submitted</span>
                             ) : isApproved === 2 ? (
                               <span className="text-red-500">Decline</span>
-                            ) : (
+                              ) : isApproved === 1 ? (
+                                <span className="text-red-500">Submitted</span>
+                            ) : (  
                               <span className="text-yellow-500">Pending</span>
                             )}
                           </td>
